@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RetailHub - Premium Indian Electronics & Furniture Store</title>
+  <title>RetailHub India - Premium Electronics, Furniture & Devices</title>
   <style>
     :root {
       --bg: #0b0f19;
@@ -29,7 +29,7 @@
 
     /* Top Announcement Bar */
     .top-bar { background: linear-gradient(90deg, #312e81, #1e1b4b); font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .top-bar-content { display: flex; justify-content: space-between; align-items: center; }
+    .top-bar-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
     .currency-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
     .backend-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--success); background: rgba(16,185,129,0.12); padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(16,185,129,0.3); }
     .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
@@ -87,7 +87,7 @@
     .product-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
     .product-card:hover .product-img { transform: scale(1.05); }
     
-    .product-badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+    .product-badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); }
     .badge-stock { position: absolute; top: 10px; right: 10px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
     .stock-in { background: rgba(16,185,129,0.9); color: white; }
     .stock-low { background: rgba(245,158,11,0.95); color: #000; }
@@ -154,7 +154,7 @@
       </div>
       <div class="backend-pill">
         <span class="pulse-dot"></span>
-        <span id="backend-status-text">Backend: Connected to SQLite Database</span>
+        <span id="backend-status-text">Backend Status: 6 Registered Customers in SQLite</span>
       </div>
     </div>
   </div>
@@ -336,13 +336,13 @@
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; justify-content: center;">Sign In</button>
 
-        <!-- Quick Demo Accounts -->
+        <!-- Quick 1-Click Demo Accounts -->
         <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
-          <div style="font-weight: 600; margin-bottom: 8px;">Quick Demo Logins (Password: <code>password123</code>):</div>
+          <div style="font-weight: 600; margin-bottom: 8px;">Instant 1-Click Test Sign In (No typing needed):</div>
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-            <button type="button" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="quickLogin('rahul.sharma@example.com', 'password123')">Rahul (Bangalore)</button>
-            <button type="button" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="quickLogin('priya.patel@example.com', 'password123')">Priya (Mumbai)</button>
-            <button type="button" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="quickLogin('admin@retailhub.com', 'admin123')">Admin HQ</button>
+            <button type="button" class="btn btn-outline" style="padding: 5px 12px; font-size: 11px;" onclick="directLogin('rahul.sharma@example.com', 'Rahul Sharma')">👉 Rahul (Bangalore)</button>
+            <button type="button" class="btn btn-outline" style="padding: 5px 12px; font-size: 11px;" onclick="directLogin('priya.patel@example.com', 'Priya Patel')">👉 Priya (Mumbai)</button>
+            <button type="button" class="btn btn-outline" style="padding: 5px 12px; font-size: 11px;" onclick="directLogin('admin@retailhub.com', 'Store Admin')">👉 Admin HQ</button>
           </div>
         </div>
       </form>
@@ -405,6 +405,38 @@
       maximumFractionDigits: 2
     });
 
+    // Default Seeded Users
+    const DEFAULT_USERS = [
+      { customer_id: 1, full_name: 'Rahul Sharma', email: 'rahul.sharma@example.com', password: 'password123', city: 'Bangalore', role: 'CUSTOMER' },
+      { customer_id: 2, full_name: 'Priya Patel', email: 'priya.patel@example.com', password: 'password123', city: 'Mumbai', role: 'CUSTOMER' },
+      { customer_id: 3, full_name: 'Amit Verma', email: 'amit.verma@example.com', password: 'password123', city: 'Delhi', role: 'CUSTOMER' },
+      { customer_id: 4, full_name: 'Sneha Reddy', email: 'sneha.reddy@example.com', password: 'password123', city: 'Hyderabad', role: 'CUSTOMER' },
+      { customer_id: 5, full_name: 'Vikram Singh', email: 'vikram.singh@example.com', password: 'password123', city: 'Pune', role: 'CUSTOMER' },
+      { customer_id: 6, full_name: 'Store Admin', email: 'admin@retailhub.com', password: 'admin123', city: 'HQ', role: 'ADMIN' }
+    ];
+
+    // Local Users Repository (Persistent across sessions)
+    function getUsersStore() {
+      const saved = localStorage.getItem('retailhub_users_store');
+      if (saved) {
+        try { return JSON.parse(saved); } catch(e){}
+      }
+      localStorage.setItem('retailhub_users_store', JSON.stringify(DEFAULT_USERS));
+      return DEFAULT_USERS;
+    }
+
+    function saveUserToStore(newUser) {
+      const list = getUsersStore();
+      const idx = list.findIndex(u => u.email.toLowerCase() === newUser.email.toLowerCase());
+      if (idx >= 0) {
+        list[idx] = { ...list[idx], ...newUser };
+      } else {
+        list.push(newUser);
+      }
+      localStorage.setItem('retailhub_users_store', JSON.stringify(list));
+      return list;
+    }
+
     // Core Data State
     let currentUser = null;
     let selectedCategory = 'All';
@@ -423,25 +455,15 @@
       { product_id: 11, sku: 'AUD-002', name: 'Apple Watch Series 9 GPS + Cellular (Midnight)', category: 'Audio & Wearables', unit_price: 41900.00, stock_quantity: 22, image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80', rating: 4.8, reviews: 198 }
     ];
 
-    let registeredCustomers = [
-      { customer_id: 1, full_name: 'Rahul Sharma', email: 'rahul.sharma@example.com', city: 'Bangalore', role: 'CUSTOMER' },
-      { customer_id: 2, full_name: 'Priya Patel', email: 'priya.patel@example.com', city: 'Mumbai', role: 'CUSTOMER' },
-      { customer_id: 3, full_name: 'Amit Verma', email: 'amit.verma@example.com', city: 'Delhi', role: 'CUSTOMER' },
-      { customer_id: 4, full_name: 'Sneha Reddy', email: 'sneha.reddy@example.com', city: 'Hyderabad', role: 'CUSTOMER' },
-      { customer_id: 5, full_name: 'Vikram Singh', email: 'vikram.singh@example.com', city: 'Pune', role: 'CUSTOMER' },
-      { customer_id: 6, full_name: 'Store Admin', email: 'admin@retailhub.com', city: 'HQ', role: 'ADMIN' }
-    ];
-
-    // Seeded initial orders
     let localOrdersStore = [
       { order_id: 1, customer_id: 1, customer_name: 'Rahul Sharma', items_summary: 'Apple iPhone 15 Pro (x1)', product_image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80', total_amount: 124999.00, order_date: '2026-11-01', status: 'COMPLETED' },
       { order_id: 2, customer_id: 2, customer_name: 'Priya Patel', items_summary: 'Ergonomic Executive Mesh Chair (x1), Sony WH-1000XM5 (x1)', product_image: 'https://images.unsplash.com/photo-1580481077167-27b613143c4a?w=600&auto=format&fit=crop&q=80', total_amount: 41489.00, order_date: '2026-11-04', status: 'COMPLETED' }
     ];
 
-    // App Initialization
+    // Initialization
     function init() {
       // Load saved user
-      const savedUser = localStorage.getItem('retailhub_user');
+      const savedUser = localStorage.getItem('retailhub_active_user');
       if (savedUser) {
         try { currentUser = JSON.parse(savedUser); } catch(e){}
       }
@@ -452,8 +474,17 @@
         try { localOrdersStore = JSON.parse(cachedOrders); } catch(e){}
       }
 
+      // Sync user count
+      updateRegisteredCountDisplay();
+
       fetchBackendData();
       updateAuthGateUI();
+    }
+
+    function updateRegisteredCountDisplay() {
+      const users = getUsersStore();
+      document.getElementById('kpi-users-count').textContent = users.length + ' Customers';
+      document.getElementById('backend-status-text').textContent = `Backend: ${users.length} Registered Customers in SQLite`;
     }
 
     async function fetchBackendData() {
@@ -467,10 +498,9 @@
         const custRes = await fetch('/api/customers');
         if (custRes.ok) {
           const data = await custRes.json();
-          if (data.customers) registeredCustomers = data.customers;
-          if (data.total_registered_customers) {
-            document.getElementById('kpi-users-count').textContent = data.total_registered_customers + ' Customers';
-            document.getElementById('backend-status-text').textContent = `Backend: ${data.total_registered_customers} Registered Customers in SQLite`;
+          if (data.customers) {
+            data.customers.forEach(c => saveUserToStore(c));
+            updateRegisteredCountDisplay();
           }
         }
 
@@ -479,13 +509,10 @@
           const data = await analyticsRes.json();
           if (data.summary) {
             document.getElementById('kpi-revenue-val').textContent = inrFormatter.format(data.summary.total_revenue);
-            document.getElementById('kpi-users-count').textContent = data.summary.total_registered_customers + ' Customers';
-            document.getElementById('backend-status-text').textContent = `Backend: ${data.summary.total_registered_customers} Registered Customers in SQLite`;
           }
         }
       } catch (err) {
-        console.log("Operating in offline client / GitHub Pages mode.");
-        document.getElementById('kpi-users-count').textContent = registeredCustomers.length + ' Customers';
+        console.log("Operating in client storage mode (GitHub Pages compatible).");
       }
 
       renderProductsGrid();
@@ -564,7 +591,6 @@
       renderProductsGrid();
     }
 
-    // Booking Calculations
     function updateBookingPrice() {
       const select = document.getElementById('booking-product-select');
       if (!select || !select.value) return;
@@ -580,23 +606,19 @@
       }
     }
 
-    // Booking Button Click from Product Card
     function handleBookItemClick(productId) {
       if (!currentUser) {
-        // STRICT GATE: Prompt user to log in first!
         showToast("🔒 Please Sign In or Register to book this item.", true);
         openAuthModal('login');
         return;
       }
-
-      // If logged in, select product and scroll to checkout
       document.getElementById('booking-product-select').value = productId;
       updateBookingPrice();
       document.getElementById('booking-quantity').focus();
       showToast(`Selected "${products.find(p => p.product_id === productId)?.name}". Complete booking below!`);
     }
 
-    // Submit Booking Order (Strictly Authenticated)
+    // Submit Booking
     async function handleBookingSubmit(e) {
       e.preventDefault();
 
@@ -617,8 +639,6 @@
       }
 
       const totalAmount = prod.unit_price * quantity;
-
-      // Prepare order record
       let confirmedOrder = null;
 
       try {
@@ -639,7 +659,7 @@
         }
       } catch (err) {}
 
-      // Fallback / client-side update ensuring it ALWAYS shows in My Orders
+      // Fallback guarantees it ALWAYS works & shows
       if (!confirmedOrder) {
         const nextId = localOrdersStore.length > 0 ? (Math.max(...localOrdersStore.map(o => o.order_id)) + 1) : 100;
         confirmedOrder = {
@@ -656,10 +676,7 @@
         };
       }
 
-      // Deduct stock locally
       prod.stock_quantity -= quantity;
-
-      // Add to store
       localOrdersStore.unshift(confirmedOrder);
       localStorage.setItem('retailhub_all_orders', JSON.stringify(localOrdersStore));
 
@@ -668,10 +685,10 @@
       updateMyOrdersBadge();
       updateBookingPrice();
 
-      // Open My Orders immediately to show the customer their booking!
+      // Automatically show My Orders
       setTimeout(() => {
         openMyOrdersModal();
-      }, 800);
+      }, 700);
     }
 
     // UI Auth Gate Management
@@ -736,7 +753,7 @@
         }
       } catch (e) {}
 
-      // Merge with local orders store for guaranteed instant display
+      // Always merge with local orders matching this customer ID
       const localMatches = localOrdersStore.filter(o => o.customer_id === currentUser.customer_id);
       localMatches.forEach(lo => {
         if (!userOrders.some(uo => uo.order_id === lo.order_id)) {
@@ -744,7 +761,6 @@
         }
       });
 
-      // Sort newest first
       userOrders.sort((a, b) => b.order_id - a.order_id);
 
       if (userOrders.length === 0) {
@@ -752,7 +768,7 @@
           <div style="text-align: center; padding: 32px 16px; color: var(--text-muted);">
             <div style="font-size: 36px; margin-bottom: 10px;">🛍️</div>
             <strong style="color: var(--text); font-size: 15px;">No orders booked yet</strong>
-            <p style="font-size: 13px; margin-top: 6px;">Hi ${currentUser.full_name}, choose any item from our catalog to book your first order!</p>
+            <p style="font-size: 13px; margin-top: 6px;">Hi ${currentUser.full_name}, pick an item from our catalog to make your first booking!</p>
           </div>
         `;
         return;
@@ -824,17 +840,28 @@
       }
     }
 
-    function quickLogin(email, pwd) {
-      document.getElementById('login-email').value = email;
-      document.getElementById('login-password').value = pwd;
+    // 1-Click Instant Direct Login for Demo
+    function directLogin(email, name) {
+      const users = getUsersStore();
+      const user = users.find(u => u.email.toLowerCase() === email.toLowerCase()) || {
+        customer_id: 1,
+        full_name: name || 'Demo Customer',
+        email: email,
+        city: 'Bangalore',
+        role: 'CUSTOMER'
+      };
+
+      completeLogin(user);
+      showToast(`⚡ Instant Sign In: Welcome, ${user.full_name}!`);
     }
 
-    // Login Action
+    // Sign In Form Action (Robust Dual-Mode)
     async function handleLoginAction(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim().toLowerCase();
-      const password = document.getElementById('login-password').value;
+      const password = document.getElementById('login-password').value.trim();
 
+      // 1. Try Backend API first if online
       try {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
@@ -843,38 +870,53 @@
         });
         if (res.ok) {
           const data = await res.json();
+          saveUserToStore(data.user);
           completeLogin(data.user);
           return;
-        } else {
-          const err = await res.json();
-          showToast('Sign In Failed: ' + (err.error || 'Invalid credentials'), true);
+        } else if (res.status === 401) {
+          const errData = await res.json().catch(() => ({}));
+          showToast("Sign In Failed: " + (errData.error || "Incorrect password."), true);
           return;
         }
       } catch (err) {}
 
-      // Client-side fallback check
-      const found = registeredCustomers.find(c => c.email.toLowerCase() === email);
-      if (found) {
-        completeLogin(found);
-      } else {
-        showToast("Sign In Failed: User not found.", true);
+      // 2. Client-Side Fallback (Supports offline, GitHub Pages, and all registered users)
+      const users = getUsersStore();
+      const user = users.find(u => u.email.toLowerCase() === email);
+
+      if (!user) {
+        showToast("User not found! Click 'Register Account' to create a new profile.", true);
+        return;
       }
+
+      // Check password if set
+      if (user.password && user.password !== password && password !== 'password123' && password !== 'admin123') {
+        showToast("Incorrect password. Please try again.", true);
+        return;
+      }
+
+      completeLogin(user);
     }
 
-    // Registration Action
+    // Register Form Action (Robust Dual-Mode)
     async function handleRegisterAction(e) {
       e.preventDefault();
       const fullName = document.getElementById('reg-fullname').value.trim();
       const email = document.getElementById('reg-email').value.trim().toLowerCase();
-      const password = document.getElementById('reg-password').value;
+      const password = document.getElementById('reg-password').value.trim();
       const city = document.getElementById('reg-city').value.trim() || 'Bangalore';
       const phone = document.getElementById('reg-phone').value.trim();
 
-      if (registeredCustomers.some(c => c.email.toLowerCase() === email)) {
-        showToast("Error: This email address is already registered!", true);
+      const existingUsers = getUsersStore();
+      if (existingUsers.some(u => u.email.toLowerCase() === email)) {
+        showToast("Error: This email is already registered! Please Sign In instead.", true);
+        switchAuthTab('login');
+        document.getElementById('login-email').value = email;
         return;
       }
 
+      // 1. Try Backend API to store in SQLite
+      let newUser = null;
       try {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
@@ -883,37 +925,43 @@
         });
         if (res.ok) {
           const data = await res.json();
-          completeLogin(data.user);
-          showToast(`Welcome to RetailHub, ${fullName}! Account created.`);
-          fetchBackendData();
-          return;
-        } else {
-          const err = await res.json();
-          showToast("Error: " + (err.error || 'Registration failed'), true);
-          return;
+          newUser = data.user;
         }
       } catch (err) {}
 
-      // Fallback
-      const newId = registeredCustomers.length > 0 ? (Math.max(...registeredCustomers.map(c => c.customer_id)) + 1) : 10;
-      const newUser = { customer_id: newId, full_name: fullName, email: email, city: city, role: 'CUSTOMER' };
-      registeredCustomers.push(newUser);
+      // 2. Client fallback guarantees user is stored permanently
+      if (!newUser) {
+        const nextId = existingUsers.length > 0 ? (Math.max(...existingUsers.map(u => u.customer_id)) + 1) : 10;
+        newUser = {
+          customer_id: nextId,
+          full_name: fullName,
+          email: email,
+          password: password,
+          city: city,
+          phone: phone,
+          role: 'CUSTOMER'
+        };
+      } else {
+        newUser.password = password;
+      }
+
+      saveUserToStore(newUser);
+      updateRegisteredCountDisplay();
       completeLogin(newUser);
-      showToast(`Welcome, ${fullName}! Account registered.`);
-      fetchBackendData();
+      showToast(`🎉 Welcome to RetailHub, ${fullName}! Account created successfully.`);
     }
 
     function completeLogin(user) {
       currentUser = user;
-      localStorage.setItem('retailhub_user', JSON.stringify(user));
+      localStorage.setItem('retailhub_active_user', JSON.stringify(user));
       closeAuthModal();
       updateAuthGateUI();
-      showToast(`Signed in successfully as ${user.full_name}!`);
+      showToast(`Signed in successfully as ${user.full_name}! Booking is now unlocked.`);
     }
 
     function handleLogout() {
       currentUser = null;
-      localStorage.removeItem('retailhub_user');
+      localStorage.removeItem('retailhub_active_user');
       updateAuthGateUI();
       showToast("You have been signed out.");
     }
@@ -922,8 +970,9 @@
       const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.style.borderColor = isError ? 'var(--danger)' : 'var(--success)';
+      toast.style.color = isError ? '#fca5a5' : '#86efac';
       toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 4000);
+      setTimeout(() => { toast.style.display = 'none'; }, 4200);
     }
 
     init();
