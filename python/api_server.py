@@ -1,19 +1,7 @@
 """
 RetailHub - Lightweight REST API Microservice
-Includes Customer Registration, Authentication, and Order Management.
-Zero external pip packages needed!
-
-Endpoints:
-  GET  / (Serves Frontend Storefront)
-  GET  /api/health
-  GET  /api/products
-  GET  /api/customers
-  GET  /api/orders
-  GET  /api/user/orders?customer_id=1
-  GET  /api/analytics
-  POST /api/auth/register
-  POST /api/auth/login
-  POST /api/orders
+Currency: Indian Rupee (INR - ₹)
+Includes Registration, Authentication, Product Images, and Customer Order Tracking.
 """
 
 import hashlib
@@ -91,10 +79,11 @@ class RetailApiHandler(BaseHTTPRequestHandler):
 
         if path in ("/api", "/api/health"):
             self._send_json(200, {
-                "service": "RetailHub REST API with Registration",
+                "service": "RetailHub Indian E-Commerce REST API",
+                "currency": "INR (₹)",
                 "status": "Online",
                 "endpoints": [
-                    "GET / (Frontend Dashboard)",
+                    "GET /",
                     "GET /api/products",
                     "GET /api/customers",
                     "GET /api/orders",
@@ -112,7 +101,7 @@ class RetailApiHandler(BaseHTTPRequestHandler):
 
         if path == "/api/products":
             cursor.execute("""
-                SELECT p.product_id, p.sku, p.name, c.name AS category, p.unit_price, p.stock_quantity
+                SELECT p.product_id, p.sku, p.name, p.image_url, c.name AS category, p.unit_price, p.stock_quantity
                 FROM products p
                 JOIN categories c ON p.category_id = c.category_id
                 WHERE p.is_active = 1
@@ -127,7 +116,10 @@ class RetailApiHandler(BaseHTTPRequestHandler):
             cursor.execute("SELECT customer_id, full_name, email, city, role, registered_at FROM customers ORDER BY customer_id")
             data = [dict(row) for row in cursor.fetchall()]
             conn.close()
-            self._send_json(200, {"count": len(data), "customers": data})
+            self._send_json(200, {
+                "total_registered_customers": len(data),
+                "customers": data
+            })
             return
 
         if path == "/api/orders":
@@ -151,7 +143,8 @@ class RetailApiHandler(BaseHTTPRequestHandler):
 
             cursor.execute("""
                 SELECT o.order_id, o.order_date, o.total_amount, o.status,
-                       GROUP_CONCAT(p.name || ' (x' || oi.quantity || ')', ', ') AS items_summary
+                       GROUP_CONCAT(p.name || ' (x' || oi.quantity || ')', ', ') AS items_summary,
+                       MAX(p.image_url) AS product_image
                 FROM orders o
                 JOIN order_items oi ON o.order_id = oi.order_id
                 JOIN products p ON oi.product_id = p.product_id
@@ -165,14 +158,18 @@ class RetailApiHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/analytics":
+            cursor.execute("SELECT COUNT(*) FROM customers")
+            total_customers = cursor.fetchone()[0]
+
             cursor.execute("""
                 SELECT 
                     COUNT(*) AS total_orders,
-                    ROUND(SUM(total_amount), 2) AS total_revenue,
-                    ROUND(AVG(total_amount), 2) AS avg_order_value
+                    ROUND(COALESCE(SUM(total_amount), 0), 2) AS total_revenue,
+                    ROUND(COALESCE(AVG(total_amount), 0), 2) AS avg_order_value
                 FROM orders WHERE status = 'COMPLETED'
             """)
             summary = dict(cursor.fetchone())
+            summary["total_registered_customers"] = total_customers
 
             cursor.execute("""
                 SELECT sku, name, stock_quantity 
@@ -183,6 +180,7 @@ class RetailApiHandler(BaseHTTPRequestHandler):
             conn.close()
 
             self._send_json(200, {
+                "currency": "INR (₹)",
                 "summary": summary,
                 "low_stock_alerts": low_stock
             })
@@ -208,7 +206,7 @@ class RetailApiHandler(BaseHTTPRequestHandler):
             full_name = payload.get("full_name", "").strip()
             email = payload.get("email", "").strip().lower()
             password = payload.get("password", "")
-            city = payload.get("city", "Online").strip()
+            city = payload.get("city", "Bangalore").strip()
             phone = payload.get("phone", "").strip()
 
             if not full_name or not email or not password:
@@ -235,11 +233,15 @@ class RetailApiHandler(BaseHTTPRequestHandler):
                 )
                 conn.commit()
                 new_id = cursor.lastrowid
+
+                cursor.execute("SELECT COUNT(*) FROM customers")
+                total_users = cursor.fetchone()[0]
                 conn.close()
 
                 self._send_json(201, {
                     "success": True,
                     "message": "Registration successful!",
+                    "total_registered_customers": total_users,
                     "user": {
                         "customer_id": new_id,
                         "full_name": full_name,
@@ -290,7 +292,7 @@ class RetailApiHandler(BaseHTTPRequestHandler):
                 self._send_json(500, {"success": False, "error": str(e)})
             return
 
-        # 3. Create Sales Order
+        # 3. Create Sales Order (Strictly for authenticated users)
         if path == "/api/orders":
             try:
                 customer_id = int(payload.get("customer_id"))
@@ -300,8 +302,16 @@ class RetailApiHandler(BaseHTTPRequestHandler):
                 conn = get_db()
                 cursor = conn.cursor()
 
+                # Verify customer exists
+                cursor.execute("SELECT full_name FROM customers WHERE customer_id = ?", (customer_id,))
+                cust = cursor.fetchone()
+                if not cust:
+                    conn.close()
+                    self._send_json(401, {"error": "Authentication required. Please log in first."})
+                    return
+
                 cursor.execute(
-                    "SELECT product_id, name, unit_price, stock_quantity FROM products WHERE product_id = ?",
+                    "SELECT product_id, name, unit_price, stock_quantity, image_url FROM products WHERE product_id = ?",
                     (product_id,)
                 )
                 prod = cursor.fetchone()
@@ -337,11 +347,21 @@ class RetailApiHandler(BaseHTTPRequestHandler):
                 conn.close()
 
                 self._send_json(201, {
-                    "message": "Order created successfully",
-                    "order_id": order_id,
-                    "product": prod["name"],
-                    "quantity": quantity,
-                    "total_amount": total_amount
+                    "success": True,
+                    "message": "Order placed successfully!",
+                    "order": {
+                        "order_id": order_id,
+                        "customer_id": customer_id,
+                        "customer_name": cust["full_name"],
+                        "product_name": prod["name"],
+                        "items_summary": f"{prod['name']} (x{quantity})",
+                        "product_image": prod["image_url"],
+                        "quantity": quantity,
+                        "unit_price": prod["unit_price"],
+                        "total_amount": total_amount,
+                        "order_date": "Just now",
+                        "status": "COMPLETED"
+                    }
                 })
             except Exception as e:
                 self._send_json(400, {"error": str(e)})
@@ -357,6 +377,7 @@ def run_server(port=8080):
 
     print("=" * 68)
     print(" [RetailHub Server] Online & Ready for Network Access!")
+    print(" Currency: Indian Rupee (INR - ₹)")
     print("=" * 68)
     print(f"  * This Computer:       http://localhost:{port}/")
     print(f"  * Other Devices (LAN): http://{local_ip}:{port}/")

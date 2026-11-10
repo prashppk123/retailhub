@@ -72,7 +72,7 @@ namespace RetailHub.Services
         public List<Product> GetProducts()
         {
             var list = new List<Product>();
-            string sql = "SELECT p.product_id, p.sku, p.name, c.name AS category, p.unit_price, p.stock_quantity FROM products p JOIN categories c ON p.category_id = c.category_id WHERE p.is_active = 1 ORDER BY p.product_id";
+            string sql = "SELECT p.product_id, p.sku, p.name, p.image_url, c.name AS category, p.unit_price, p.stock_quantity FROM products p JOIN categories c ON p.category_id = c.category_id WHERE p.is_active = 1 ORDER BY p.product_id";
             string json = RunBridge(string.Format("query \"{0}\"", sql));
 
             var root = _serializer.Deserialize<Dictionary<string, object>>(json);
@@ -88,6 +88,7 @@ namespace RetailHub.Services
                             Convert.ToString(row["sku"]),
                             Convert.ToString(row["name"]),
                             Convert.ToString(row["category"]),
+                            row.ContainsKey("image_url") ? Convert.ToString(row["image_url"]) : "",
                             Convert.ToDecimal(row["unit_price"]),
                             Convert.ToInt32(row["stock_quantity"])
                         ));

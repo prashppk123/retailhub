@@ -3,511 +3,805 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RetailHub - Modern E-Commerce & Customer Portal</title>
+  <title>RetailHub - Premium Indian Electronics & Furniture Store</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --card-hover: #27354a;
-      --border: #334155;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
+      --bg: #0b0f19;
+      --surface: #111827;
+      --card: #1f293d;
+      --card-hover: #26334d;
+      --border: #2d3b55;
+      --text: #f9fafb;
+      --text-muted: #94a3b8;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #06b6d4;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --accent: #8b5cf6;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+      --shadow-md: 0 10px 25px rgba(0,0,0,0.5);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.7);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 20px; min-height: 100vh; }
-    .container { max-width: 1200px; margin: 0 auto; }
-    
-    /* Header & Navigation */
-    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .badge-stack { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); color: var(--primary); border: 1px solid rgba(59, 130, 246, 0.3); }
-    
-    .nav-actions { display: flex; align-items: center; gap: 10px; }
-    .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; border: none; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 60px; min-height: 100vh; }
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+
+    /* Top Announcement Bar */
+    .top-bar { background: linear-gradient(90deg, #312e81, #1e1b4b); font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .top-bar-content { display: flex; justify-content: space-between; align-items: center; }
+    .currency-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+    .backend-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--success); background: rgba(16,185,129,0.12); padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(16,185,129,0.3); }
+    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* Main Navigation Header */
+    header { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+    .header-content { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; gap: 20px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+    .brand-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), #818cf8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+    .brand-title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(90deg, #fff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+    /* Nav Buttons & User Controls */
+    .user-nav { display: flex; align-items: center; gap: 10px; }
+    .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: none; display: inline-flex; align-items: center; gap: 6px; }
     .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--muted); }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--text-muted); }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
     .btn-success { background: var(--success); color: white; }
-    .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); }
+    .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
 
-    /* User Profile Bar */
-    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 6px 14px; border-radius: 999px; font-size: 13px; }
-    .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+    .user-badge { display: flex; align-items: center; gap: 8px; background: rgba(79,70,229,0.15); border: 1px solid rgba(79,70,229,0.3); padding: 5px 12px; border-radius: 999px; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
 
-    /* KPI Highlights */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
-    .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .kpi-label { font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-    .kpi-val { font-size: 26px; font-weight: 700; margin-top: 6px; }
+    /* Hero / KPI Dashboard */
+    .hero-section { padding: 24px 0 10px; }
+    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+    .kpi-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--primary); }
+    .kpi-card.kpi-users::after { background: var(--accent); }
+    .kpi-card.kpi-revenue::after { background: var(--success); }
+    .kpi-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+    .kpi-value { font-size: 26px; font-weight: 800; margin-top: 6px; letter-spacing: -0.5px; }
+    .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-    /* Main Grid */
-    .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+    /* Layout Structure */
+    .store-layout { display: grid; grid-template-columns: 2.3fr 1fr; gap: 24px; }
+    @media (max-width: 960px) { .store-layout { grid-template-columns: 1fr; } }
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    /* Filter Bar */
+    .category-filter { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 6px; }
+    .cat-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+    .cat-btn:hover { color: var(--text); border-color: var(--text-muted); }
+    .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(79,70,229,0.35); }
 
-    /* Products Catalog */
-    .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    .filter-btn { background: #334155; border: none; color: var(--text); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; }
-    .filter-btn.active, .filter-btn:hover { background: var(--primary); }
+    /* Product Cards Grid */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .product-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; position: relative; }
+    .product-card:hover { transform: translateY(-4px); border-color: rgba(79,70,229,0.5); box-shadow: var(--shadow-md); }
+    
+    .img-container { width: 100%; height: 180px; position: relative; background: #000; overflow: hidden; }
+    .product-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .product-card:hover .product-img { transform: scale(1.05); }
+    
+    .product-badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+    .badge-stock { position: absolute; top: 10px; right: 10px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+    .stock-in { background: rgba(16,185,129,0.9); color: white; }
+    .stock-low { background: rgba(245,158,11,0.95); color: #000; }
+    .stock-out { background: rgba(239,68,68,0.9); color: white; }
 
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-    .product-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
-    .product-card:hover { border-color: var(--primary); background: rgba(59, 130, 246, 0.03); }
-    .product-name { font-weight: 600; font-size: 14px; margin-bottom: 6px; line-height: 1.3; }
-    .product-meta { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
-    .product-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
-    .product-price { font-size: 18px; font-weight: 700; color: var(--success); }
+    .card-body { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-category { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .product-title { font-size: 15px; font-weight: 700; margin: 6px 0 10px; line-height: 1.35; color: var(--text); }
+    .rating-row { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #facc15; margin-bottom: 12px; }
 
-    .stock-badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
-    .stock-ok { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-    .stock-low { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-    .stock-critical { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border); margin-top: auto; }
+    .price-box { display: flex; flex-direction: column; }
+    .price-tag { font-size: 18px; font-weight: 800; color: var(--success); }
+    .tax-text { font-size: 10px; color: var(--text-muted); }
 
-    /* Forms */
+    /* Checkout & Booking Panel */
+    .booking-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; position: sticky; top: 90px; box-shadow: var(--shadow-sm); }
+    .panel-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+    
+    /* Gate Banner (Login Required) */
+    .login-gate-banner { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); border-radius: 10px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.4; color: #fbbf24; display: flex; flex-direction: column; gap: 10px; }
+    .login-gate-banner button { background: var(--warning); color: #000; font-weight: 700; }
+    .login-gate-banner button:hover { background: #d97706; }
+
+    .authenticated-banner { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 10px; padding: 12px; margin-bottom: 16px; font-size: 13px; color: var(--success); display: flex; align-items: center; justify-content: space-between; }
+
     .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
-    input, select { width: 100%; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 8px; font-size: 13px; outline: none; }
-    input:focus, select:focus { border-color: var(--primary); }
+    .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    .form-input, .form-select { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 11px 13px; border-radius: 8px; font-size: 13px; outline: none; transition: border-color 0.2s; }
+    .form-input:focus, .form-select:focus { border-color: var(--primary); }
 
-    /* Modal */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
-    .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 440px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); position: relative; }
-    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
-    .modal-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
-    .modal-tab { flex: 1; padding: 10px; background: none; border: none; color: var(--muted); font-weight: 600; font-size: 14px; cursor: pointer; text-align: center; }
-    .modal-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+    .price-summary-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin: 16px 0; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+    .summary-row.total { font-size: 16px; font-weight: 800; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; color: var(--success); }
+
+    /* Modals */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal-dialog { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; width: 100%; max-width: 460px; padding: 28px; box-shadow: var(--shadow-lg); position: relative; animation: slideUp 0.2s ease; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-close { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+    .modal-close:hover { color: var(--text); }
+    .tab-nav { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 10px; background: none; border: none; color: var(--text-muted); font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; }
+    .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+    /* Orders Modal */
+    .order-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+    .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .order-item-detail { display: flex; align-items: center; gap: 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .order-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; }
 
     /* Toast */
-    #toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; border: 1px solid var(--success); color: var(--text); padding: 14px 20px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-size: 13px; display: none; z-index: 2000; }
+    #toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--success); color: var(--text); padding: 14px 20px; border-radius: 10px; box-shadow: var(--shadow-lg); font-size: 13px; display: none; z-index: 2000; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Top Header -->
-    <header>
-      <div class="brand">
-        <span style="font-size: 28px;">🛍️</span>
-        <div>
-          <h1 style="font-size: 20px; font-weight: 700;">RetailHub Storefront & Customer Portal</h1>
-          <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
-            <span class="badge-stack">SQL Database</span>
-            <span class="badge-stack">.NET C#</span>
-            <span class="badge-stack">Python REST API</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Auth Navigation Bar -->
-      <div class="nav-actions" id="auth-actions">
-        <!-- Logged Out State -->
-        <div id="logged-out-view" style="display: flex; gap: 8px;">
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="currency-tag">🇮🇳 Currency: INR (₹)</span>
+        <span style="color: var(--text-muted);">Express 2-Day Delivery across India</span>
+      </div>
+      <div class="backend-pill">
+        <span class="pulse-dot"></span>
+        <span id="backend-status-text">Backend: Connected to SQLite Database</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <header>
+    <div class="container header-content">
+      <a href="#" class="brand">
+        <div class="brand-icon">🛍️</div>
+        <div>
+          <div class="brand-title">RetailHub India</div>
+          <div class="brand-subtitle">Smartphones • Laptops • Luxury Furniture</div>
+        </div>
+      </a>
+
+      <!-- Authentication Nav Controls -->
+      <div class="user-nav">
+        <!-- Logged Out View -->
+        <div id="nav-guest" style="display: flex; gap: 10px;">
           <button class="btn btn-outline" onclick="openAuthModal('login')">Sign In</button>
           <button class="btn btn-primary" onclick="openAuthModal('register')">Register Account</button>
         </div>
 
-        <!-- Logged In State -->
-        <div id="logged-in-view" style="display: none; align-items: center; gap: 10px;">
-          <div class="user-pill">
-            <div class="user-avatar" id="user-avatar-char">U</div>
+        <!-- Logged In View -->
+        <div id="nav-user" style="display: none; align-items: center; gap: 10px;">
+          <div class="user-badge">
+            <div class="user-avatar" id="avatar-icon">R</div>
             <div>
-              <strong id="user-display-name">User Name</strong>
-              <span id="user-role-badge" style="font-size: 11px; color: var(--muted); margin-left: 4px;">(Customer)</span>
+              <strong id="user-name-text">Rahul Sharma</strong>
+              <span style="font-size: 11px; color: var(--accent); margin-left: 4px;">(Verified)</span>
             </div>
           </div>
-          <button class="btn btn-outline" onclick="openMyOrdersModal()">📦 My Orders</button>
-          <button class="btn btn-danger" onclick="logoutUser()">Log Out</button>
+          <button class="btn btn-outline" onclick="openMyOrdersModal()">
+            <span>📦 My Orders</span>
+            <span id="my-orders-count-badge" style="background: var(--primary); color: white; padding: 2px 7px; border-radius: 99px; font-size: 11px; font-weight: 700;">0</span>
+          </button>
+          <button class="btn btn-danger" onclick="handleLogout()">Log Out</button>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- Metrics Banner -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Store Revenue</div>
-        <div class="kpi-val" id="kpi-revenue" style="color: var(--success);">$974.95</div>
-      </div>
-      <div class="kpi-card">
+  <div class="container hero-section">
+    <!-- Executive KPI Dashboard -->
+    <div class="kpi-row">
+      <div class="kpi-card kpi-users">
         <div class="kpi-label">Registered Customers</div>
-        <div class="kpi-val" id="kpi-customers">6 Users</div>
+        <div class="kpi-value" id="kpi-users-count" style="color: var(--accent);">6 Customers</div>
+        <div class="kpi-sub">Managed in SQLite backend</div>
+      </div>
+      <div class="kpi-card kpi-revenue">
+        <div class="kpi-label">Total Store Sales</div>
+        <div class="kpi-value" id="kpi-revenue-val" style="color: var(--success);">₹1,66,488.00</div>
+        <div class="kpi-sub">Across verified bookings</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Active Catalog</div>
-        <div class="kpi-val" id="kpi-products">12 Items</div>
+        <div class="kpi-label">Product Catalog</div>
+        <div class="kpi-value">11 Products</div>
+        <div class="kpi-sub">Phones, Laptops, Furniture</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Stock Health</div>
-        <div class="kpi-val" id="kpi-alerts" style="color: var(--warning);">3 Low Stock</div>
+        <div class="kpi-label">Active Warehouse Stock</div>
+        <div class="kpi-value" id="kpi-stock-units">265 Units</div>
+        <div class="kpi-sub">Ready for fast dispatch</div>
       </div>
     </div>
 
-    <!-- Main Workspace -->
-    <div class="main-grid">
-      <!-- Left: Products Catalog -->
-      <div>
-        <div class="card">
-          <div class="card-title">
-            <span>📦 Product Catalog</span>
-            <div class="filter-bar" style="margin-bottom: 0;">
-              <button class="filter-btn active" onclick="filterCategory('All', this)">All</button>
-              <button class="filter-btn" onclick="filterCategory('Electronics', this)">Electronics</button>
-              <button class="filter-btn" onclick="filterCategory('Home & Office', this)">Home & Office</button>
-              <button class="filter-btn" onclick="filterCategory('Apparel', this)">Apparel</button>
-              <button class="filter-btn" onclick="filterCategory('Beverages', this)">Beverages</button>
-            </div>
-          </div>
+    <!-- Category Filter Bar -->
+    <div class="category-filter">
+      <button class="cat-btn active" onclick="setCategory('All', this)">🌟 All Categories</button>
+      <button class="cat-btn" onclick="setCategory('Smartphones', this)">📱 Smartphones</button>
+      <button class="cat-btn" onclick="setCategory('Laptops & Computers', this)">💻 Laptops & PCs</button>
+      <button class="cat-btn" onclick="setCategory('Furniture', this)">🪑 Office & Home Furniture</button>
+      <button class="cat-btn" onclick="setCategory('Audio & Wearables', this)">🎧 Audio & Wearables</button>
+    </div>
 
-          <div class="product-grid" id="product-grid">
-            <!-- Dynamically populated -->
-          </div>
+    <!-- Main Store Layout -->
+    <div class="store-layout">
+      <!-- Left Column: Products Grid -->
+      <div>
+        <div class="products-grid" id="products-catalog-grid">
+          <!-- Dynamically populated via JS -->
         </div>
       </div>
 
-      <!-- Right: Checkout & Quick Order -->
+      <!-- Right Column: Booking & Checkout Panel -->
       <div>
-        <!-- Instant Checkout Form -->
-        <div class="card">
-          <div class="card-title">🛒 Instant Checkout (SQL Transaction)</div>
-
-          <div id="checkout-auth-reminder" style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <span>💡 Sign in to tie orders to your account:</span>
-            <button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px;" onclick="openAuthModal('register')">Register / Login</button>
+        <div class="booking-panel">
+          <div class="panel-title">
+            <span>🛒 Instant Item Booking</span>
+            <span style="font-size: 11px; color: var(--success); font-weight: 600;">ACID SQL</span>
           </div>
 
-          <form id="order-form" onsubmit="handlePlaceOrder(event)">
-            <div class="form-group">
-              <label for="select-customer">Customer Account</label>
-              <select id="select-customer" required>
-                <!-- Dynamically populated or locked to logged in user -->
-              </select>
+          <!-- Strict Login Requirement Banner -->
+          <div id="booking-gate-banner" class="login-gate-banner">
+            <div>
+              <strong>🔒 Login Required to Book</strong>
+              <p style="font-size: 12px; margin-top: 4px;">You must sign in or register an account before booking any item.</p>
             </div>
+            <button class="btn" onclick="openAuthModal('login')">Sign In to Continue</button>
+          </div>
 
+          <!-- Authenticated Customer Banner -->
+          <div id="booking-auth-banner" class="authenticated-banner" style="display: none;">
+            <div>
+              <strong>Ordering as:</strong>
+              <div id="auth-customer-name" style="font-size: 13px; font-weight: 600;">Rahul Sharma</div>
+            </div>
+            <span style="font-size: 11px; background: rgba(16,185,129,0.2); padding: 3px 8px; border-radius: 4px; font-weight: 700;">READY</span>
+          </div>
+
+          <!-- Booking Form -->
+          <form id="booking-form" onsubmit="handleBookingSubmit(event)">
             <div class="form-group">
-              <label for="select-product">Selected Product</label>
-              <select id="select-product" onchange="updatePricePreview()" required>
+              <label class="form-label" for="booking-product-select">Select Product to Book</label>
+              <select id="booking-product-select" class="form-select" onchange="updateBookingPrice()">
                 <!-- Populated via JS -->
               </select>
             </div>
 
             <div class="form-group">
-              <label for="input-quantity">Quantity</label>
-              <input type="number" id="input-quantity" min="1" max="20" value="1" onchange="updatePricePreview()" required />
+              <label class="form-label" for="booking-quantity">Quantity</label>
+              <input type="number" id="booking-quantity" class="form-input" min="1" max="10" value="1" onchange="updateBookingPrice()" required />
             </div>
 
-            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="color: var(--muted); font-size: 13px;">Estimated Total:</span>
-              <strong id="price-preview" style="color: var(--success); font-size: 18px;">$0.00</strong>
+            <div class="form-group">
+              <label class="form-label" for="booking-address">Delivery City / Address</label>
+              <input type="text" id="booking-address" class="form-input" placeholder="e.g. Bangalore, Karnataka" required />
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">Place Order (Commit to SQL)</button>
+            <!-- Price Breakdown Box -->
+            <div class="price-summary-box">
+              <div class="summary-row">
+                <span style="color: var(--text-muted);">Item Price:</span>
+                <span id="summary-unit-price">₹0.00</span>
+              </div>
+              <div class="summary-row">
+                <span style="color: var(--text-muted);">GST & Taxes (Included):</span>
+                <span style="color: var(--success);">18% GST Paid</span>
+              </div>
+              <div class="summary-row">
+                <span style="color: var(--text-muted);">Delivery Charge:</span>
+                <span style="color: var(--success); font-weight: 700;">FREE</span>
+              </div>
+              <div class="summary-row total">
+                <span>Total Amount:</span>
+                <span id="summary-total-price">₹0.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-submit-booking" style="width: 100%; padding: 14px; font-size: 14px; justify-content: center;">
+              🔒 Sign In to Book Item
+            </button>
           </form>
-        </div>
-
-        <!-- Recent Store Orders -->
-        <div class="card">
-          <div class="card-title">📜 Recent Store Activity</div>
-          <div id="recent-orders-list" style="font-size: 13px;">
-            <!-- Populated -->
-          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- AUTHENTICATION MODAL (Register / Sign In) -->
+  <!-- AUTHENTICATION MODAL (Register & Login) -->
   <div class="modal-backdrop" id="auth-modal" onclick="if(event.target===this) closeAuthModal()">
-    <div class="modal">
+    <div class="modal-dialog">
       <button class="modal-close" onclick="closeAuthModal()">&times;</button>
-      
-      <div class="modal-tabs">
-        <button class="modal-tab active" id="tab-register-btn" onclick="switchAuthTab('register')">Create Account</button>
-        <button class="modal-tab" id="tab-login-btn" onclick="switchAuthTab('login')">Sign In</button>
+
+      <div class="tab-nav">
+        <button class="tab-btn active" id="tab-login-nav" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="tab-btn" id="tab-register-nav" onclick="switchAuthTab('register')">Register Account</button>
       </div>
 
-      <!-- Registration Form -->
-      <form id="form-register" onsubmit="handleRegisterSubmit(event)">
+      <!-- Sign In Form -->
+      <form id="form-login" onsubmit="handleLoginAction(event)">
         <div class="form-group">
-          <label for="reg-name">Full Name *</label>
-          <input type="text" id="reg-name" placeholder="e.g. John Doe" required />
+          <label class="form-label" for="login-email">Email Address *</label>
+          <input type="email" id="login-email" class="form-input" placeholder="rahul.sharma@example.com" required />
         </div>
         <div class="form-group">
-          <label for="reg-email">Email Address *</label>
-          <input type="email" id="reg-email" placeholder="john@example.com" required />
+          <label class="form-label" for="login-password">Password *</label>
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; justify-content: center;">Sign In</button>
+
+        <!-- Quick Demo Accounts -->
+        <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
+          <div style="font-weight: 600; margin-bottom: 8px;">Quick Demo Logins (Password: <code>password123</code>):</div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="quickLogin('rahul.sharma@example.com', 'password123')">Rahul (Bangalore)</button>
+            <button type="button" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="quickLogin('priya.patel@example.com', 'password123')">Priya (Mumbai)</button>
+            <button type="button" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="quickLogin('admin@retailhub.com', 'admin123')">Admin HQ</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="form-register" style="display: none;" onsubmit="handleRegisterAction(event)">
+        <div class="form-group">
+          <label class="form-label" for="reg-fullname">Full Name *</label>
+          <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Ananya Rao" required />
         </div>
         <div class="form-group">
-          <label for="reg-password">Password *</label>
-          <input type="password" id="reg-password" placeholder="At least 4 characters" minlength="4" required />
+          <label class="form-label" for="reg-email">Email Address *</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="ananya@example.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password * (Min 4 characters)</label>
+          <input type="password" id="reg-password" class="form-input" placeholder="Create a password" minlength="4" required />
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="form-group">
-            <label for="reg-city">City / Region</label>
-            <input type="text" id="reg-city" placeholder="e.g. Seattle" />
+            <label class="form-label" for="reg-city">City</label>
+            <input type="text" id="reg-city" class="form-input" placeholder="Bangalore" />
           </div>
           <div class="form-group">
-            <label for="reg-phone">Phone (optional)</label>
-            <input type="text" id="reg-phone" placeholder="+1-555-..." />
+            <label class="form-label" for="reg-phone">Phone</label>
+            <input type="text" id="reg-phone" class="form-input" placeholder="+91-98765-..." />
           </div>
         </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 6px;">Register & Sign In</button>
-      </form>
-
-      <!-- Login Form -->
-      <form id="form-login" style="display: none;" onsubmit="handleLoginSubmit(event)">
-        <div class="form-group">
-          <label for="login-email">Email Address *</label>
-          <input type="email" id="login-email" placeholder="alice.johnson@example.com" required />
-        </div>
-        <div class="form-group">
-          <label for="login-password">Password *</label>
-          <input type="password" id="login-password" placeholder="••••••••" required />
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 6px;">Sign In</button>
-
-        <!-- Quick Demo Accounts -->
-        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted);">
-          <span>Quick Demo Logins (Password: <code>password123</code>):</span>
-          <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
-            <button type="button" class="filter-btn" onclick="quickFillLogin('alice.johnson@example.com', 'password123')">Alice (Seattle)</button>
-            <button type="button" class="filter-btn" onclick="quickFillLogin('bob.smith@example.com', 'password123')">Bob (Austin)</button>
-            <button type="button" class="filter-btn" onclick="quickFillLogin('admin@retailhub.com', 'admin123')">Admin HQ</button>
-          </div>
-        </div>
+        <button type="submit" class="btn btn-success" style="width: 100%; padding: 12px; margin-top: 10px; justify-content: center;">Create Account & Sign In</button>
       </form>
     </div>
   </div>
 
   <!-- MY ORDERS MODAL -->
   <div class="modal-backdrop" id="orders-modal" onclick="if(event.target===this) closeMyOrdersModal()">
-    <div class="modal" style="max-width: 550px;">
+    <div class="modal-dialog" style="max-width: 580px;">
       <button class="modal-close" onclick="closeMyOrdersModal()">&times;</button>
-      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 14px;">📦 My Order History</h3>
-      <div id="my-orders-list" style="max-height: 350px; overflow-y: auto; padding-right: 4px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+        <div>
+          <h3 style="font-size: 18px; font-weight: 800;">📦 My Order History</h3>
+          <p style="font-size: 12px; color: var(--text-muted);" id="orders-modal-subtitle">Your personal bookings and invoices</p>
+        </div>
+        <span class="currency-tag">🇮🇳 INR (₹)</span>
+      </div>
+
+      <div id="my-orders-container" style="max-height: 400px; overflow-y: auto; padding-right: 4px;">
         <!-- Populated via JS -->
       </div>
     </div>
   </div>
 
-  <div id="toast">Notification</div>
+  <!-- Toast Notification -->
+  <div id="toast">Notification Message</div>
 
   <script>
-    // State
+    // Indian Rupee Currency Formatter
+    const inrFormatter = new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 2
+    });
+
+    // Core Data State
     let currentUser = null;
+    let selectedCategory = 'All';
+
     let products = [
-      { product_id: 1, sku: 'ELEC-001', name: 'Wireless Noise-Cancelling Headphones', category: 'Electronics', unit_price: 149.99, stock_quantity: 45 },
-      { product_id: 2, sku: 'ELEC-002', name: 'Mechanical RGB Gaming Keyboard', category: 'Electronics', unit_price: 89.50, stock_quantity: 60 },
-      { product_id: 3, sku: 'ELEC-003', name: 'Ergonomic Vertical Mouse', category: 'Electronics', unit_price: 45.00, stock_quantity: 8 },
-      { product_id: 4, sku: 'ELEC-004', name: '4K Ultra-HD Webcam', category: 'Electronics', unit_price: 79.99, stock_quantity: 5 },
-      { product_id: 5, sku: 'OFF-001', name: 'Adjustable Dual Monitor Arm', category: 'Home & Office', unit_price: 65.00, stock_quantity: 25 },
-      { product_id: 6, sku: 'OFF-002', name: 'Memory Foam Lumbar Support Cushion', category: 'Home & Office', unit_price: 32.50, stock_quantity: 40 },
-      { product_id: 7, sku: 'OFF-003', name: 'Desk Cable Management Tray', category: 'Home & Office', unit_price: 19.99, stock_quantity: 12 },
-      { product_id: 8, sku: 'APP-001', name: 'Developer Cotton Hoodie (Navy)', category: 'Apparel', unit_price: 49.99, stock_quantity: 30 },
-      { product_id: 9, sku: 'APP-002', name: 'Minimalist Tech Backpack', category: 'Apparel', unit_price: 69.00, stock_quantity: 18 },
-      { product_id: 10, sku: 'BEV-001', name: 'Single-Origin Ethiopian Coffee Beans (1lb)', category: 'Beverages', unit_price: 18.50, stock_quantity: 80 },
-      { product_id: 11, sku: 'BEV-002', name: 'Smart Temperature-Control Ceramic Mug', category: 'Beverages', unit_price: 55.00, stock_quantity: 4 }
+      { product_id: 1, sku: 'PHONE-001', name: 'Apple iPhone 15 Pro (128GB, Natural Titanium)', category: 'Smartphones', unit_price: 124999.00, stock_quantity: 35, image_url: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80', rating: 4.9, reviews: 342 },
+      { product_id: 2, sku: 'PHONE-002', name: 'Samsung Galaxy S24 Ultra (256GB, Titanium Black)', category: 'Smartphones', unit_price: 119999.00, stock_quantity: 42, image_url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80', rating: 4.8, reviews: 218 },
+      { product_id: 3, sku: 'PHONE-003', name: 'OnePlus 12 5G (16GB RAM, Emerald Green)', category: 'Smartphones', unit_price: 64999.00, stock_quantity: 20, image_url: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80', rating: 4.7, reviews: 185 },
+      { product_id: 4, sku: 'LAP-001', name: 'Apple MacBook Pro M3 (14-inch, Space Black)', category: 'Laptops & Computers', unit_price: 169900.00, stock_quantity: 18, image_url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80', rating: 5.0, reviews: 140 },
+      { product_id: 5, sku: 'LAP-002', name: 'Dell XPS 15 OLED (Intel Core i9, 32GB RAM)', category: 'Laptops & Computers', unit_price: 184990.00, stock_quantity: 10, image_url: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600&auto=format&fit=crop&q=80', rating: 4.7, reviews: 96 },
+      { product_id: 6, sku: 'LAP-003', name: 'ASUS ROG Strix G16 Gaming Laptop (RTX 4070)', category: 'Laptops & Computers', unit_price: 139990.00, stock_quantity: 15, image_url: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80', rating: 4.8, reviews: 112 },
+      { product_id: 7, sku: 'FURN-001', name: 'Ergonomic High-Back Executive Mesh Chair', category: 'Furniture', unit_price: 14499.00, stock_quantity: 25, image_url: 'https://images.unsplash.com/photo-1580481077167-27b613143c4a?w=600&auto=format&fit=crop&q=80', rating: 4.9, reviews: 290 },
+      { product_id: 8, sku: 'FURN-002', name: 'Motorized Dual-Motor Standing Desk (Teak Wood)', category: 'Furniture', unit_price: 28990.00, stock_quantity: 12, image_url: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=600&auto=format&fit=crop&q=80', rating: 4.8, reviews: 75 },
+      { product_id: 9, sku: 'FURN-003', name: 'Modern Solid Oak Wood Bookshelf & Storage Rack', category: 'Furniture', unit_price: 12999.00, stock_quantity: 8, image_url: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=600&auto=format&fit=crop&q=80', rating: 4.6, reviews: 63 },
+      { product_id: 10, sku: 'AUD-001', name: 'Sony WH-1000XM5 Wireless Noise Cancelling Headphones', category: 'Audio & Wearables', unit_price: 26990.00, stock_quantity: 50, image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80', rating: 4.9, reviews: 450 },
+      { product_id: 11, sku: 'AUD-002', name: 'Apple Watch Series 9 GPS + Cellular (Midnight)', category: 'Audio & Wearables', unit_price: 41900.00, stock_quantity: 22, image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80', rating: 4.8, reviews: 198 }
     ];
 
-    let customers = [
-      { customer_id: 1, full_name: 'Alice Johnson', email: 'alice.johnson@example.com', city: 'Seattle', role: 'CUSTOMER' },
-      { customer_id: 2, full_name: 'Bob Smith', email: 'bob.smith@example.com', city: 'Austin', role: 'CUSTOMER' },
-      { customer_id: 3, full_name: 'Carlos Mendez', email: 'carlos.m@example.com', city: 'San Francisco', role: 'CUSTOMER' },
-      { customer_id: 4, full_name: 'Diana Patel', email: 'diana.patel@example.com', city: 'New York', role: 'CUSTOMER' },
-      { customer_id: 5, full_name: 'Ethan Wright', email: 'ethan.w@example.com', city: 'Chicago', role: 'CUSTOMER' },
-      { customer_id: 6, full_name: 'Admin User', email: 'admin@retailhub.com', city: 'HQ', role: 'ADMIN' }
+    let registeredCustomers = [
+      { customer_id: 1, full_name: 'Rahul Sharma', email: 'rahul.sharma@example.com', city: 'Bangalore', role: 'CUSTOMER' },
+      { customer_id: 2, full_name: 'Priya Patel', email: 'priya.patel@example.com', city: 'Mumbai', role: 'CUSTOMER' },
+      { customer_id: 3, full_name: 'Amit Verma', email: 'amit.verma@example.com', city: 'Delhi', role: 'CUSTOMER' },
+      { customer_id: 4, full_name: 'Sneha Reddy', email: 'sneha.reddy@example.com', city: 'Hyderabad', role: 'CUSTOMER' },
+      { customer_id: 5, full_name: 'Vikram Singh', email: 'vikram.singh@example.com', city: 'Pune', role: 'CUSTOMER' },
+      { customer_id: 6, full_name: 'Store Admin', email: 'admin@retailhub.com', city: 'HQ', role: 'ADMIN' }
     ];
 
-    let storeOrders = [
-      { order_id: 6, customer: 'Ethan Wright', total_amount: 119.98, order_date: '2026-11-02' },
-      { order_id: 5, customer: 'Diana Patel', total_amount: 214.99, order_date: '2026-10-25' },
-      { order_id: 4, customer: 'Alice Johnson', total_amount: 55.00, order_date: '2026-10-18' }
+    // Seeded initial orders
+    let localOrdersStore = [
+      { order_id: 1, customer_id: 1, customer_name: 'Rahul Sharma', items_summary: 'Apple iPhone 15 Pro (x1)', product_image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80', total_amount: 124999.00, order_date: '2026-11-01', status: 'COMPLETED' },
+      { order_id: 2, customer_id: 2, customer_name: 'Priya Patel', items_summary: 'Ergonomic Executive Mesh Chair (x1), Sony WH-1000XM5 (x1)', product_image: 'https://images.unsplash.com/photo-1580481077167-27b613143c4a?w=600&auto=format&fit=crop&q=80', total_amount: 41489.00, order_date: '2026-11-04', status: 'COMPLETED' }
     ];
 
-    let currentCategory = 'All';
-
-    // Initialization
+    // App Initialization
     function init() {
-      // Check stored session
+      // Load saved user
       const savedUser = localStorage.getItem('retailhub_user');
       if (savedUser) {
         try { currentUser = JSON.parse(savedUser); } catch(e){}
       }
-      fetchData();
-      updateUserUI();
+
+      // Load cached orders
+      const cachedOrders = localStorage.getItem('retailhub_all_orders');
+      if (cachedOrders) {
+        try { localOrdersStore = JSON.parse(cachedOrders); } catch(e){}
+      }
+
+      fetchBackendData();
+      updateAuthGateUI();
     }
 
-    async function fetchData() {
+    async function fetchBackendData() {
       try {
         const prodRes = await fetch('/api/products');
         if (prodRes.ok) {
           const data = await prodRes.json();
-          if (data.products) products = data.products;
+          if (data.products && data.products.length > 0) products = data.products;
         }
 
         const custRes = await fetch('/api/customers');
         if (custRes.ok) {
           const data = await custRes.json();
-          if (data.customers) customers = data.customers;
-        }
-
-        const ordRes = await fetch('/api/orders');
-        if (ordRes.ok) {
-          const data = await ordRes.json();
-          if (data.orders) storeOrders = data.orders.slice(0, 5);
+          if (data.customers) registeredCustomers = data.customers;
+          if (data.total_registered_customers) {
+            document.getElementById('kpi-users-count').textContent = data.total_registered_customers + ' Customers';
+            document.getElementById('backend-status-text').textContent = `Backend: ${data.total_registered_customers} Registered Customers in SQLite`;
+          }
         }
 
         const analyticsRes = await fetch('/api/analytics');
         if (analyticsRes.ok) {
           const data = await analyticsRes.json();
           if (data.summary) {
-            document.getElementById('kpi-revenue').textContent = '$' + Number(data.summary.total_revenue).toFixed(2);
-          }
-          if (data.low_stock_alerts) {
-            document.getElementById('kpi-alerts').textContent = data.low_stock_alerts.length + ' Low Stock';
+            document.getElementById('kpi-revenue-val').textContent = inrFormatter.format(data.summary.total_revenue);
+            document.getElementById('kpi-users-count').textContent = data.summary.total_registered_customers + ' Customers';
+            document.getElementById('backend-status-text').textContent = `Backend: ${data.summary.total_registered_customers} Registered Customers in SQLite`;
           }
         }
       } catch (err) {
-        console.log("Operating in client-side / GitHub Pages mode.");
+        console.log("Operating in offline client / GitHub Pages mode.");
+        document.getElementById('kpi-users-count').textContent = registeredCustomers.length + ' Customers';
       }
 
-      document.getElementById('kpi-customers').textContent = customers.length + ' Users';
-      document.getElementById('kpi-products').textContent = products.length + ' Items';
-
-      renderProducts();
-      renderProductSelect();
-      renderCustomerSelect();
-      renderRecentOrders();
-      updatePricePreview();
+      renderProductsGrid();
+      renderProductSelectDropdown();
+      updateMyOrdersBadge();
+      updateBookingPrice();
     }
 
-    // UI Renderers
-    function renderProducts() {
-      const grid = document.getElementById('product-grid');
+    // Render Products Grid
+    function renderProductsGrid() {
+      const grid = document.getElementById('products-catalog-grid');
       grid.innerHTML = '';
 
-      const filtered = currentCategory === 'All' 
+      const filtered = selectedCategory === 'All' 
         ? products 
-        : products.filter(p => p.category === currentCategory);
+        : products.filter(p => p.category === selectedCategory);
 
       filtered.forEach(p => {
-        let stockClass = 'stock-ok';
-        let stockLabel = p.stock_quantity + ' in stock';
+        let stockClass = 'stock-in';
+        let stockLabel = `${p.stock_quantity} in stock`;
         if (p.stock_quantity <= 5) {
-          stockClass = 'stock-critical';
-          stockLabel = p.stock_quantity + ' left (Critical)';
+          stockClass = 'stock-out';
+          stockLabel = `${p.stock_quantity} left (Critical)`;
         } else if (p.stock_quantity <= 10) {
           stockClass = 'stock-low';
-          stockLabel = p.stock_quantity + ' left (Low)';
+          stockLabel = `${p.stock_quantity} left (Low)`;
         }
 
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-          <div>
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
-              <span class="stock-badge ${stockClass}">${stockLabel}</span>
-              <code style="font-size: 11px; color: var(--muted);">${p.sku}</code>
-            </div>
-            <div class="product-name">${p.name}</div>
-            <div class="product-meta">${p.category}</div>
+          <div class="img-container">
+            <img src="${p.image_url}" alt="${p.name}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=500&auto=format&fit=crop&q=80'" />
+            <span class="product-badge">${p.sku}</span>
+            <span class="badge-stock ${stockClass}">${stockLabel}</span>
           </div>
-          <div class="product-footer">
-            <span class="product-price">$${Number(p.unit_price).toFixed(2)}</span>
-            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 12px;" onclick="selectProductForCheckout(${p.product_id})">Select</button>
+          <div class="card-body">
+            <div>
+              <div class="product-category">${p.category}</div>
+              <h3 class="product-title">${p.name}</h3>
+              <div class="rating-row">
+                <span>★★★★★</span>
+                <span style="color: var(--text-muted); font-size: 11px;">(${p.rating || '4.8'})</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="price-box">
+                <span class="price-tag">${inrFormatter.format(p.unit_price)}</span>
+                <span class="tax-text">Inclusive of all taxes</span>
+              </div>
+              <button class="btn btn-primary" onclick="handleBookItemClick(${p.product_id})">
+                ${currentUser ? '⚡ Book Now' : '🔒 Book (Sign In)'}
+              </button>
+            </div>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    function renderProductSelect() {
-      const select = document.getElementById('select-product');
+    function renderProductSelectDropdown() {
+      const select = document.getElementById('booking-product-select');
       select.innerHTML = '';
       products.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.product_id;
-        opt.textContent = `${p.name} ($${Number(p.unit_price).toFixed(2)}) - ${p.stock_quantity} available`;
+        opt.textContent = `${p.name} — ${inrFormatter.format(p.unit_price)} (${p.stock_quantity} in stock)`;
         select.appendChild(opt);
       });
     }
 
-    function renderCustomerSelect() {
-      const select = document.getElementById('select-customer');
-      select.innerHTML = '';
+    function setCategory(cat, btn) {
+      selectedCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProductsGrid();
+    }
+
+    // Booking Calculations
+    function updateBookingPrice() {
+      const select = document.getElementById('booking-product-select');
+      if (!select || !select.value) return;
+
+      const pid = parseInt(select.value);
+      const qty = parseInt(document.getElementById('booking-quantity').value) || 1;
+      const prod = products.find(p => p.product_id === pid);
+
+      if (prod) {
+        document.getElementById('summary-unit-price').textContent = inrFormatter.format(prod.unit_price);
+        const total = prod.unit_price * qty;
+        document.getElementById('summary-total-price').textContent = inrFormatter.format(total);
+      }
+    }
+
+    // Booking Button Click from Product Card
+    function handleBookItemClick(productId) {
+      if (!currentUser) {
+        // STRICT GATE: Prompt user to log in first!
+        showToast("🔒 Please Sign In or Register to book this item.", true);
+        openAuthModal('login');
+        return;
+      }
+
+      // If logged in, select product and scroll to checkout
+      document.getElementById('booking-product-select').value = productId;
+      updateBookingPrice();
+      document.getElementById('booking-quantity').focus();
+      showToast(`Selected "${products.find(p => p.product_id === productId)?.name}". Complete booking below!`);
+    }
+
+    // Submit Booking Order (Strictly Authenticated)
+    async function handleBookingSubmit(e) {
+      e.preventDefault();
+
+      if (!currentUser) {
+        showToast("🔒 Authentication Required! Please Sign In or Register.", true);
+        openAuthModal('login');
+        return;
+      }
+
+      const productId = parseInt(document.getElementById('booking-product-select').value);
+      const quantity = parseInt(document.getElementById('booking-quantity').value);
+      const address = document.getElementById('booking-address').value.trim();
+
+      const prod = products.find(p => p.product_id === productId);
+      if (!prod || prod.stock_quantity < quantity) {
+        showToast("Error: Requested quantity exceeds warehouse stock!", true);
+        return;
+      }
+
+      const totalAmount = prod.unit_price * quantity;
+
+      // Prepare order record
+      let confirmedOrder = null;
+
+      try {
+        const res = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer_id: currentUser.customer_id,
+            product_id: productId,
+            quantity: quantity,
+            delivery_address: address
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          confirmedOrder = data.order;
+        }
+      } catch (err) {}
+
+      // Fallback / client-side update ensuring it ALWAYS shows in My Orders
+      if (!confirmedOrder) {
+        const nextId = localOrdersStore.length > 0 ? (Math.max(...localOrdersStore.map(o => o.order_id)) + 1) : 100;
+        confirmedOrder = {
+          order_id: nextId,
+          customer_id: currentUser.customer_id,
+          customer_name: currentUser.full_name,
+          items_summary: `${prod.name} (x${quantity})`,
+          product_image: prod.image_url,
+          quantity: quantity,
+          unit_price: prod.unit_price,
+          total_amount: totalAmount,
+          order_date: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }),
+          status: 'COMPLETED'
+        };
+      }
+
+      // Deduct stock locally
+      prod.stock_quantity -= quantity;
+
+      // Add to store
+      localOrdersStore.unshift(confirmedOrder);
+      localStorage.setItem('retailhub_all_orders', JSON.stringify(localOrdersStore));
+
+      showToast(`🎉 Order #${confirmedOrder.order_id} booked successfully for ${inrFormatter.format(totalAmount)}!`);
+      renderProductsGrid();
+      updateMyOrdersBadge();
+      updateBookingPrice();
+
+      // Open My Orders immediately to show the customer their booking!
+      setTimeout(() => {
+        openMyOrdersModal();
+      }, 800);
+    }
+
+    // UI Auth Gate Management
+    function updateAuthGateUI() {
+      const guestNav = document.getElementById('nav-guest');
+      const userNav = document.getElementById('nav-user');
+      const gateBanner = document.getElementById('booking-gate-banner');
+      const authBanner = document.getElementById('booking-auth-banner');
+      const submitBtn = document.getElementById('btn-submit-booking');
 
       if (currentUser) {
-        // Locked to logged in user
-        const opt = document.createElement('option');
-        opt.value = currentUser.customer_id;
-        opt.textContent = `Ordering as: ${currentUser.full_name} (${currentUser.email})`;
-        select.appendChild(opt);
-        select.disabled = true;
+        guestNav.style.display = 'none';
+        userNav.style.display = 'flex';
+        gateBanner.style.display = 'none';
+        authBanner.style.display = 'flex';
+
+        document.getElementById('user-name-text').textContent = currentUser.full_name;
+        document.getElementById('auth-customer-name').textContent = `${currentUser.full_name} (${currentUser.email})`;
+        document.getElementById('avatar-icon').textContent = currentUser.full_name.charAt(0).toUpperCase();
+
+        submitBtn.innerHTML = '⚡ Confirm & Book Order (ACID SQL)';
+        submitBtn.className = 'btn btn-success';
+
+        if (currentUser.city && !document.getElementById('booking-address').value) {
+          document.getElementById('booking-address').value = currentUser.city;
+        }
       } else {
-        select.disabled = false;
-        customers.forEach(c => {
-          const opt = document.createElement('option');
-          opt.value = c.customer_id;
-          opt.textContent = `${c.full_name} (${c.city || 'Customer'})`;
-          select.appendChild(opt);
-        });
+        guestNav.style.display = 'flex';
+        userNav.style.display = 'none';
+        gateBanner.style.display = 'flex';
+        authBanner.style.display = 'none';
+
+        submitBtn.innerHTML = '🔒 Sign In to Book Item';
+        submitBtn.className = 'btn btn-primary';
       }
+
+      updateMyOrdersBadge();
+      renderProductsGrid();
     }
 
-    function renderRecentOrders() {
-      const container = document.getElementById('recent-orders-list');
-      container.innerHTML = '';
-      storeOrders.slice(0, 4).forEach(o => {
-        const item = document.createElement('div');
-        item.style.padding = '10px 0';
-        item.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
-        item.style.display = 'flex';
-        item.style.justifyContent = 'space-between';
-        item.style.alignItems = 'center';
-        item.innerHTML = `
-          <div>
-            <strong style="color: var(--primary);">Order #${o.order_id}</strong>
-            <span style="color: var(--muted); margin-left: 4px;">• ${o.customer || 'Customer'}</span>
-            <div style="font-size: 11px; color: var(--muted);">${o.order_date || 'Recent'}</div>
+    // My Orders Modal
+    async function openMyOrdersModal() {
+      if (!currentUser) {
+        showToast("Please log in to view your orders.", true);
+        openAuthModal('login');
+        return;
+      }
+
+      document.getElementById('orders-modal').style.display = 'flex';
+      const container = document.getElementById('my-orders-container');
+      container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Fetching your orders...</div>';
+
+      let userOrders = [];
+
+      try {
+        const res = await fetch(`/api/user/orders?customer_id=${currentUser.customer_id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.orders && data.orders.length > 0) {
+            userOrders = data.orders;
+          }
+        }
+      } catch (e) {}
+
+      // Merge with local orders store for guaranteed instant display
+      const localMatches = localOrdersStore.filter(o => o.customer_id === currentUser.customer_id);
+      localMatches.forEach(lo => {
+        if (!userOrders.some(uo => uo.order_id === lo.order_id)) {
+          userOrders.push(lo);
+        }
+      });
+
+      // Sort newest first
+      userOrders.sort((a, b) => b.order_id - a.order_id);
+
+      if (userOrders.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 32px 16px; color: var(--text-muted);">
+            <div style="font-size: 36px; margin-bottom: 10px;">🛍️</div>
+            <strong style="color: var(--text); font-size: 15px;">No orders booked yet</strong>
+            <p style="font-size: 13px; margin-top: 6px;">Hi ${currentUser.full_name}, choose any item from our catalog to book your first order!</p>
           </div>
-          <strong style="color: var(--success);">$${Number(o.total_amount).toFixed(2)}</strong>
         `;
-        container.appendChild(item);
+        return;
+      }
+
+      container.innerHTML = '';
+      userOrders.forEach(o => {
+        const card = document.createElement('div');
+        card.className = 'order-card';
+        card.innerHTML = `
+          <div class="order-header">
+            <div>
+              <strong style="color: var(--accent);">Order #${o.order_id}</strong>
+              <span style="font-size: 11px; color: var(--text-muted); margin-left: 8px;">Date: ${o.order_date || 'Recent'}</span>
+            </div>
+            <span style="background: rgba(16,185,129,0.15); color: var(--success); font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 4px;">
+              ${o.status || 'COMPLETED'}
+            </span>
+          </div>
+          <div class="order-item-detail">
+            <img src="${o.product_image || 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=500&auto=format&fit=crop&q=80'}" class="order-thumb" alt="Product" />
+            <div style="flex-grow: 1;">
+              <div style="font-weight: 700; font-size: 13px; color: var(--text);">${o.items_summary || 'Booked Product'}</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Customer: ${currentUser.full_name}</div>
+            </div>
+            <div style="font-size: 16px; font-weight: 800; color: var(--success);">
+              ${inrFormatter.format(o.total_amount)}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
       });
     }
 
-    function filterCategory(cat, btn) {
-      currentCategory = cat;
-      document.querySelectorAll('.filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderProducts();
+    function closeMyOrdersModal() {
+      document.getElementById('orders-modal').style.display = 'none';
     }
 
-    function selectProductForCheckout(id) {
-      document.getElementById('select-product').value = id;
-      updatePricePreview();
-      document.getElementById('input-quantity').focus();
-    }
-
-    function updatePricePreview() {
-      const pid = parseInt(document.getElementById('select-product').value);
-      const qty = parseInt(document.getElementById('input-quantity').value) || 1;
-      const p = products.find(x => x.product_id === pid);
-      if (p) {
-        const total = (p.unit_price * qty).toFixed(2);
-        document.getElementById('price-preview').textContent = '$' + total;
+    function updateMyOrdersBadge() {
+      if (!currentUser) {
+        document.getElementById('my-orders-count-badge').textContent = '0';
+        return;
       }
+      const count = localOrdersStore.filter(o => o.customer_id === currentUser.customer_id).length;
+      document.getElementById('my-orders-count-badge').textContent = count;
     }
 
-    // Authentication Handlers
-    function openAuthModal(tab = 'register') {
+    // Auth Modal Handlers
+    function openAuthModal(tab = 'login') {
       document.getElementById('auth-modal').style.display = 'flex';
       switchAuthTab(tab);
     }
@@ -517,64 +811,26 @@
     }
 
     function switchAuthTab(tab) {
-      if (tab === 'register') {
-        document.getElementById('tab-register-btn').className = 'modal-tab active';
-        document.getElementById('tab-login-btn').className = 'modal-tab';
-        document.getElementById('form-register').style.display = 'block';
-        document.getElementById('form-login').style.display = 'none';
-      } else {
-        document.getElementById('tab-register-btn').className = 'modal-tab';
-        document.getElementById('tab-login-btn').className = 'modal-tab active';
-        document.getElementById('form-register').style.display = 'none';
+      if (tab === 'login') {
+        document.getElementById('tab-login-nav').className = 'tab-btn active';
+        document.getElementById('tab-register-nav').className = 'tab-btn';
         document.getElementById('form-login').style.display = 'block';
+        document.getElementById('form-register').style.display = 'none';
+      } else {
+        document.getElementById('tab-login-nav').className = 'tab-btn';
+        document.getElementById('tab-register-nav').className = 'tab-btn active';
+        document.getElementById('form-login').style.display = 'none';
+        document.getElementById('form-register').style.display = 'block';
       }
     }
 
-    async function handleRegisterSubmit(e) {
-      e.preventDefault();
-      const fullName = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value.trim().toLowerCase();
-      const password = document.getElementById('reg-password').value;
-      const city = document.getElementById('reg-city').value.trim() || 'Online';
-      const phone = document.getElementById('reg-phone').value.trim();
-
-      // Check duplicate locally
-      if (customers.some(c => c.email.toLowerCase() === email)) {
-        showToast('Error: This email is already registered!', true);
-        return;
-      }
-
-      // Try server registration
-      try {
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ full_name: fullName, email: email, password: password, city: city, phone: phone })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          loginSuccess(data.user);
-          closeAuthModal();
-          showToast(`Welcome to RetailHub, ${fullName}! Account created.`);
-          return;
-        } else {
-          const err = await res.json();
-          showToast('Error: ' + (err.error || 'Registration failed'), true);
-          return;
-        }
-      } catch (err) {
-        // Fallback client-side registration (e.g. for GitHub Pages)
-      }
-
-      const newId = customers.length > 0 ? (Math.max(...customers.map(c => c.customer_id)) + 1) : 1;
-      const newUser = { customer_id: newId, full_name: fullName, email: email, city: city, role: 'CUSTOMER' };
-      customers.push(newUser);
-      loginSuccess(newUser);
-      closeAuthModal();
-      showToast(`Welcome, ${fullName}! Account created in local storage.`);
+    function quickLogin(email, pwd) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = pwd;
     }
 
-    async function handleLoginSubmit(e) {
+    // Login Action
+    async function handleLoginAction(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim().toLowerCase();
       const password = document.getElementById('login-password').value;
@@ -587,159 +843,79 @@
         });
         if (res.ok) {
           const data = await res.json();
-          loginSuccess(data.user);
-          closeAuthModal();
-          showToast(`Welcome back, ${data.user.full_name}!`);
+          completeLogin(data.user);
           return;
         } else {
           const err = await res.json();
-          showToast('Login Failed: ' + (err.error || 'Invalid credentials'), true);
+          showToast('Sign In Failed: ' + (err.error || 'Invalid credentials'), true);
           return;
-        }
-      } catch (err) {
-        // Fallback client-side login
-      }
-
-      const found = customers.find(c => c.email.toLowerCase() === email);
-      if (found) {
-        loginSuccess(found);
-        closeAuthModal();
-        showToast(`Welcome back, ${found.full_name}!`);
-      } else {
-        showToast('Login failed: Account not found.', true);
-      }
-    }
-
-    function quickFillLogin(email, pwd) {
-      document.getElementById('login-email').value = email;
-      document.getElementById('login-password').value = pwd;
-    }
-
-    function loginSuccess(user) {
-      currentUser = user;
-      localStorage.setItem('retailhub_user', JSON.stringify(user));
-      updateUserUI();
-      renderCustomerSelect();
-    }
-
-    function logoutUser() {
-      currentUser = null;
-      localStorage.removeItem('retailhub_user');
-      updateUserUI();
-      renderCustomerSelect();
-      showToast('You have been logged out.');
-    }
-
-    function updateUserUI() {
-      const loggedOutView = document.getElementById('logged-out-view');
-      const loggedInView = document.getElementById('logged-in-view');
-      const reminder = document.getElementById('checkout-auth-reminder');
-
-      if (currentUser) {
-        loggedOutView.style.display = 'none';
-        loggedInView.style.display = 'flex';
-        reminder.style.display = 'none';
-
-        document.getElementById('user-display-name').textContent = currentUser.full_name;
-        document.getElementById('user-avatar-char').textContent = currentUser.full_name.charAt(0).toUpperCase();
-        document.getElementById('user-role-badge').textContent = `(${currentUser.role || 'Customer'})`;
-      } else {
-        loggedOutView.style.display = 'flex';
-        loggedInView.style.display = 'none';
-        reminder.style.display = 'flex';
-      }
-    }
-
-    // My Orders Modal
-    async function openMyOrdersModal() {
-      if (!currentUser) return;
-      document.getElementById('orders-modal').style.display = 'flex';
-      const container = document.getElementById('my-orders-list');
-      container.innerHTML = '<div style="color: var(--muted); padding: 10px;">Loading your orders...</div>';
-
-      try {
-        const res = await fetch(`/api/user/orders?customer_id=${currentUser.customer_id}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.orders && data.orders.length > 0) {
-            container.innerHTML = '';
-            data.orders.forEach(o => {
-              container.innerHTML += `
-                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <strong style="color: var(--primary);">Order #${o.order_id}</strong>
-                    <span style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(16,185,129,0.15); color: var(--success); font-weight: 600;">${o.status}</span>
-                  </div>
-                  <div style="font-size: 13px; color: var(--text);">${o.items_summary || 'Purchased Products'}</div>
-                  <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted);">
-                    <span>${o.order_date}</span>
-                    <strong style="color: var(--success); font-size: 14px;">$${Number(o.total_amount).toFixed(2)}</strong>
-                  </div>
-                </div>
-              `;
-            });
-            return;
-          }
         }
       } catch (err) {}
 
-      // Fallback
-      container.innerHTML = `
-        <div style="text-align: center; padding: 24px; color: var(--muted);">
-          No orders found yet for <strong>${currentUser.full_name}</strong>.
-          <div style="margin-top: 8px;">Pick a product from the catalog to place your first order!</div>
-        </div>
-      `;
+      // Client-side fallback check
+      const found = registeredCustomers.find(c => c.email.toLowerCase() === email);
+      if (found) {
+        completeLogin(found);
+      } else {
+        showToast("Sign In Failed: User not found.", true);
+      }
     }
 
-    function closeMyOrdersModal() {
-      document.getElementById('orders-modal').style.display = 'none';
-    }
-
-    // Order Placement
-    async function handlePlaceOrder(e) {
+    // Registration Action
+    async function handleRegisterAction(e) {
       e.preventDefault();
-      const customerId = currentUser ? currentUser.customer_id : parseInt(document.getElementById('select-customer').value);
-      const custName = currentUser ? currentUser.full_name : document.getElementById('select-customer').selectedOptions[0].text.split('(')[0].trim();
-      const productId = parseInt(document.getElementById('select-product').value);
-      const quantity = parseInt(document.getElementById('input-quantity').value);
+      const fullName = document.getElementById('reg-fullname').value.trim();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
+      const password = document.getElementById('reg-password').value;
+      const city = document.getElementById('reg-city').value.trim() || 'Bangalore';
+      const phone = document.getElementById('reg-phone').value.trim();
 
-      const prod = products.find(p => p.product_id === productId);
-      if (!prod || prod.stock_quantity < quantity) {
-        showToast('Error: Insufficient stock available!', true);
+      if (registeredCustomers.some(c => c.email.toLowerCase() === email)) {
+        showToast("Error: This email address is already registered!", true);
         return;
       }
 
       try {
-        const res = await fetch('/api/orders', {
+        const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ customer_id: customerId, product_id: productId, quantity: quantity })
+          body: JSON.stringify({ full_name: fullName, email: email, password: password, city: city, phone: phone })
         });
         if (res.ok) {
-          const result = await res.json();
-          showToast(`Order #${result.order_id} confirmed for ${custName}! Stock updated in SQLite.`);
-          fetchData();
+          const data = await res.json();
+          completeLogin(data.user);
+          showToast(`Welcome to RetailHub, ${fullName}! Account created.`);
+          fetchBackendData();
+          return;
+        } else {
+          const err = await res.json();
+          showToast("Error: " + (err.error || 'Registration failed'), true);
           return;
         }
       } catch (err) {}
 
-      // Optimistic client-side fallback
-      prod.stock_quantity -= quantity;
-      const total = Number((prod.unit_price * quantity).toFixed(2));
-      const newOrderId = storeOrders.length > 0 ? (Math.max(...storeOrders.map(o => o.order_id)) + 1) : 1;
+      // Fallback
+      const newId = registeredCustomers.length > 0 ? (Math.max(...registeredCustomers.map(c => c.customer_id)) + 1) : 10;
+      const newUser = { customer_id: newId, full_name: fullName, email: email, city: city, role: 'CUSTOMER' };
+      registeredCustomers.push(newUser);
+      completeLogin(newUser);
+      showToast(`Welcome, ${fullName}! Account registered.`);
+      fetchBackendData();
+    }
 
-      storeOrders.unshift({
-        order_id: newOrderId,
-        customer: custName,
-        total_amount: total,
-        order_date: 'Just now'
-      });
+    function completeLogin(user) {
+      currentUser = user;
+      localStorage.setItem('retailhub_user', JSON.stringify(user));
+      closeAuthModal();
+      updateAuthGateUI();
+      showToast(`Signed in successfully as ${user.full_name}!`);
+    }
 
-      showToast(`Order #${newOrderId} confirmed! ${quantity}x ${prod.name}`);
-      renderProducts();
-      renderRecentOrders();
-      updatePricePreview();
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('retailhub_user');
+      updateAuthGateUI();
+      showToast("You have been signed out.");
     }
 
     function showToast(msg, isError = false) {

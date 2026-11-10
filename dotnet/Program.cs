@@ -74,15 +74,17 @@ namespace RetailHub
         static void PrintMenu()
         {
             try { Console.Clear(); } catch {}
+            int customerCount = _db.GetCustomers().Count;
             Console.WriteLine("==================================================================");
             Console.WriteLine("           RETAILHUB INVENTORY & ORDER MANAGEMENT (.NET)         ");
+            Console.WriteLine(string.Format("   [Backend Status: {0} Registered Customers | Currency: INR Rs.]", customerCount));
             Console.WriteLine("==================================================================");
             Console.WriteLine("  1. View Product Catalog & Inventory Levels");
             Console.WriteLine("  2. Add New Product to Catalog");
-            Console.WriteLine("  3. Place New Customer Order (SQL Transaction)");
+            Console.WriteLine(string.Format("  3. Place Customer Order (Registered Users: {0})", customerCount));
             Console.WriteLine("  4. Restock Existing Product");
             Console.WriteLine("  5. View Customer Orders & Revenue");
-            Console.WriteLine("  6. Register New Customer / User Account");
+            Console.WriteLine(string.Format("  6. Register New Customer Account (Total: {0})", customerCount));
             Console.WriteLine("  7. Run Custom SQL Query");
             Console.WriteLine("  0. Exit");
             Console.WriteLine("==================================================================");

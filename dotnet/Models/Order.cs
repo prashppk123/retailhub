@@ -3,7 +3,7 @@ using System;
 namespace RetailHub.Models
 {
     /// <summary>
-    /// Represents a customer sales order.
+    /// Represents a customer sales order in Indian Currency (INR).
     /// </summary>
     public class Order
     {
@@ -23,7 +23,7 @@ namespace RetailHub.Models
 
         public override string ToString()
         {
-            return string.Format("Order #{0,2} | Date: {1:yyyy-MM-dd HH:mm} | Customer: {2,-16} | Total: ${3,7:F2} | Status: {4}",
+            return string.Format("Order #{0,2} | Date: {1:yyyy-MM-dd HH:mm} | Customer: {2,-16} | Total: INR Rs. {3,10:N2} | Status: {4}",
                 OrderId, OrderDate, CustomerName, TotalAmount, Status);
         }
     }

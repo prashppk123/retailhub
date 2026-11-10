@@ -1,5 +1,5 @@
 -- ============================================================
--- RetailHub Database Schema with Customer Registration & Auth
+-- RetailHub Database Schema with Customer Registration & Product Images
 -- ============================================================
 
 PRAGMA foreign_keys = ON;
@@ -12,12 +12,13 @@ CREATE TABLE IF NOT EXISTS categories (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Products Table
+-- 2. Products Table (Includes image_url for e-commerce catalog)
 CREATE TABLE IF NOT EXISTS products (
     product_id INTEGER PRIMARY KEY AUTOINCREMENT,
     category_id INTEGER NOT NULL,
     sku TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
+    image_url TEXT NOT NULL,
     unit_price REAL NOT NULL CHECK(unit_price >= 0),
     stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK(stock_quantity >= 0),
     is_active INTEGER NOT NULL DEFAULT 1 CHECK(is_active IN (0, 1)),
@@ -73,6 +74,7 @@ SELECT
     p.product_id,
     p.sku,
     p.name AS product_name,
+    p.image_url,
     c.name AS category_name,
     p.unit_price,
     p.stock_quantity,

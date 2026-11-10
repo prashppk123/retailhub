@@ -1,59 +1,82 @@
 -- ============================================================
--- Seed Data for RetailHub System with User Authentication
--- Default password for all demo accounts is: password123
--- (SHA-256: ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f)
+-- Seed Data for RetailHub Indian E-Commerce Store
+-- Currency: Indian Rupee (INR - ₹)
+-- Default Password for Demo Users: password123
 -- ============================================================
 
 -- Categories
 INSERT OR IGNORE INTO categories (category_id, name, description) VALUES
-(1, 'Electronics', 'Gadgets, accessories, and computing hardware'),
-(2, 'Home & Office', 'Desk accessories, stationery, and office furniture'),
-(3, 'Apparel', 'Branded clothing and casual wear'),
-(4, 'Beverages', 'Specialty coffee, tea, and mugs');
+(1, 'Smartphones', 'Flagship and premium 5G smartphones'),
+(2, 'Laptops & Computers', 'High-performance laptops for creators and gamers'),
+(3, 'Furniture', 'Ergonomic office and modern living space furniture'),
+(4, 'Audio & Wearables', 'Noise-cancelling headphones and smart fitness watches');
 
--- Products
-INSERT OR IGNORE INTO products (product_id, category_id, sku, name, unit_price, stock_quantity, is_active) VALUES
-(1, 1, 'ELEC-001', 'Wireless Noise-Cancelling Headphones', 149.99, 45, 1),
-(2, 1, 'ELEC-002', 'Mechanical RGB Gaming Keyboard', 89.50, 60, 1),
-(3, 1, 'ELEC-003', 'Ergonomic Vertical Mouse', 45.00, 8, 1),
-(4, 1, 'ELEC-004', '4K Ultra-HD Webcam', 79.99, 5, 1),
-(5, 2, 'OFF-001', 'Adjustable Dual Monitor Arm', 65.00, 25, 1),
-(6, 2, 'OFF-002', 'Memory Foam Lumbar Support Cushion', 32.50, 40, 1),
-(7, 2, 'OFF-003', 'Desk Cable Management Tray', 19.99, 12, 1),
-(8, 3, 'APP-001', 'Developer Cotton Hoodie (Navy)', 49.99, 30, 1),
-(9, 3, 'APP-002', 'Minimalist Tech Backpack', 69.00, 18, 1),
-(10, 4, 'BEV-001', 'Single-Origin Ethiopian Coffee Beans (1lb)', 18.50, 80, 1),
-(11, 4, 'BEV-002', 'Smart Temperature-Control Ceramic Mug', 55.00, 4, 1);
+-- Products with Images and Indian Rupee (INR) Pricing
+INSERT OR IGNORE INTO products (product_id, category_id, sku, name, image_url, unit_price, stock_quantity, is_active) VALUES
+-- Smartphones
+(1, 1, 'PHONE-001', 'Apple iPhone 15 Pro (128GB, Natural Titanium)', 
+ 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80', 
+ 124999.00, 35, 1),
 
--- Customers / Registered Users
+(2, 1, 'PHONE-002', 'Samsung Galaxy S24 Ultra (256GB, Titanium Black)', 
+ 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80', 
+ 119999.00, 42, 1),
+
+(3, 1, 'PHONE-003', 'OnePlus 12 5G (16GB RAM, Emerald Green)', 
+ 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80', 
+ 64999.00, 20, 1),
+
+-- Laptops & Computers
+(4, 2, 'LAP-001', 'Apple MacBook Pro M3 (14-inch, Space Black)', 
+ 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80', 
+ 169900.00, 18, 1),
+
+(5, 2, 'LAP-002', 'Dell XPS 15 OLED (Intel Core i9, 32GB RAM)', 
+ 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600&auto=format&fit=crop&q=80', 
+ 184990.00, 10, 1),
+
+(6, 2, 'LAP-003', 'ASUS ROG Strix G16 Gaming Laptop (RTX 4070)', 
+ 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80', 
+ 139990.00, 15, 1),
+
+-- Furniture
+(7, 3, 'FURN-001', 'Ergonomic High-Back Executive Mesh Chair', 
+ 'https://images.unsplash.com/photo-1580481077167-27b613143c4a?w=600&auto=format&fit=crop&q=80', 
+ 14499.00, 25, 1),
+
+(8, 3, 'FURN-002', 'Motorized Dual-Motor Height Adjustable Standing Desk', 
+ 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=600&auto=format&fit=crop&q=80', 
+ 28990.00, 12, 1),
+
+(9, 3, 'FURN-003', 'Modern Solid Oak Wood Bookshelf & Display Rack', 
+ 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=600&auto=format&fit=crop&q=80', 
+ 12999.00, 8, 1),
+
+-- Audio & Wearables
+(10, 4, 'AUD-001', 'Sony WH-1000XM5 Wireless Noise Cancelling Headphones', 
+ 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80', 
+ 26990.00, 50, 1),
+
+(11, 4, 'AUD-002', 'Apple Watch Series 9 GPS + Cellular (Midnight)', 
+ 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80', 
+ 41900.00, 22, 1);
+
+-- Registered Customers
 INSERT OR IGNORE INTO customers (customer_id, full_name, email, password_hash, phone, city, role) VALUES
-(1, 'Alice Johnson', 'alice.johnson@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0101', 'Seattle', 'CUSTOMER'),
-(2, 'Bob Smith', 'bob.smith@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0102', 'Austin', 'CUSTOMER'),
-(3, 'Carlos Mendez', 'carlos.m@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0103', 'San Francisco', 'CUSTOMER'),
-(4, 'Diana Patel', 'diana.patel@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0104', 'New York', 'CUSTOMER'),
-(5, 'Ethan Wright', 'ethan.w@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0105', 'Chicago', 'CUSTOMER'),
-(6, 'Admin User', 'admin@retailhub.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', '+1-555-0000', 'HQ', 'ADMIN');
+(1, 'Rahul Sharma', 'rahul.sharma@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+91-98765-43210', 'Bangalore', 'CUSTOMER'),
+(2, 'Priya Patel', 'priya.patel@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+91-98765-43211', 'Mumbai', 'CUSTOMER'),
+(3, 'Amit Verma', 'amit.verma@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+91-98765-43212', 'Delhi', 'CUSTOMER'),
+(4, 'Sneha Reddy', 'sneha.reddy@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+91-98765-43213', 'Hyderabad', 'CUSTOMER'),
+(5, 'Vikram Singh', 'vikram.singh@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+91-98765-43214', 'Pune', 'CUSTOMER'),
+(6, 'Store Admin', 'admin@retailhub.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', '+91-98000-00000', 'HQ', 'ADMIN');
 
--- Orders
+-- Sample Initial Orders
 INSERT OR IGNORE INTO orders (order_id, customer_id, order_date, total_amount, status) VALUES
-(1, 1, '2026-10-01 10:15:00', 239.49, 'COMPLETED'),
-(2, 2, '2026-10-05 14:30:00', 89.50, 'COMPLETED'),
-(3, 3, '2026-10-12 09:20:00', 166.49, 'COMPLETED'),
-(4, 1, '2026-10-18 16:45:00', 55.00, 'COMPLETED'),
-(5, 4, '2026-10-25 11:10:00', 214.99, 'COMPLETED'),
-(6, 5, '2026-11-02 13:00:00', 119.98, 'COMPLETED');
+(1, 1, '2026-11-01 11:30:00', 124999.00, 'COMPLETED'),
+(2, 2, '2026-11-04 14:15:00', 41489.00, 'COMPLETED');
 
 -- Order Items
 INSERT OR IGNORE INTO order_items (item_id, order_id, product_id, quantity, unit_price) VALUES
-(1, 1, 1, 1, 149.99),
-(2, 1, 2, 1, 89.50),
-(3, 2, 2, 1, 89.50),
-(4, 3, 3, 1, 45.00),
-(5, 3, 5, 1, 65.00),
-(6, 3, 10, 3, 18.50),
-(7, 4, 11, 1, 55.00),
-(8, 5, 1, 1, 149.99),
-(9, 5, 7, 1, 19.99),
-(10, 5, 6, 1, 32.50),
-(11, 6, 8, 1, 49.99),
-(12, 6, 9, 1, 69.00);
+(1, 1, 1, 1, 124999.00),
+(2, 2, 7, 1, 14499.00),
+(3, 2, 10, 1, 26990.00);
