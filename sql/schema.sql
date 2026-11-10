@@ -1,12 +1,5 @@
 -- ============================================================
--- RetailHub Database Schema (SQLite / ANSI SQL Compliant)
--- Concepts Demonstrated:
---  - Table creation with Data Types (INTEGER, TEXT, REAL)
---  - Primary Keys & Auto-increment
---  - Foreign Keys & Referential Integrity (CASCADE / RESTRICT)
---  - Constraints (NOT NULL, UNIQUE, CHECK, DEFAULT)
---  - Indexes for Query Optimization
---  - Views for Analytical Reporting
+-- RetailHub Database Schema with Customer Registration & Auth
 -- ============================================================
 
 PRAGMA foreign_keys = ON;
@@ -32,13 +25,15 @@ CREATE TABLE IF NOT EXISTS products (
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE RESTRICT
 );
 
--- 3. Customers Table
+-- 3. Customers / Registered Users Table
 CREATE TABLE IF NOT EXISTS customers (
     customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
     phone TEXT,
     city TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'CUSTOMER' CHECK(role IN ('CUSTOMER', 'ADMIN')),
     registered_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -67,6 +62,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_products_sku ON products(sku);
+CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
 CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders(customer_id);
 CREATE INDEX IF NOT EXISTS idx_orders_date ON orders(order_date);
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);

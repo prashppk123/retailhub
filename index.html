@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RetailHub Dashboard - SQL, .NET & Python</title>
+  <title>RetailHub - Modern E-Commerce & Customer Portal</title>
   <style>
     :root {
       --bg: #0f172a;
       --card: #1e293b;
+      --card-hover: #27354a;
       --border: #334155;
       --text: #f8fafc;
       --muted: #94a3b8;
@@ -19,156 +20,178 @@
       --accent: #8b5cf6;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 24px; min-height: 100vh; }
+    body { background: var(--bg); color: var(--text); padding: 20px; min-height: 100vh; }
     .container { max-width: 1200px; margin: 0 auto; }
     
-    /* Header */
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    /* Header & Navigation */
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 12px; }
     .badge-stack { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); color: var(--primary); border: 1px solid rgba(59, 130, 246, 0.3); }
-    .status-pill { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(16, 185, 129, 0.2); }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+    
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; border: none; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--muted); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); }
 
-    /* KPI Grid */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 28px; }
-    .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
-    .kpi-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-    .kpi-val { font-size: 28px; font-weight: 700; margin-top: 8px; color: var(--text); }
-    .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    /* User Profile Bar */
+    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 6px 14px; border-radius: 999px; font-size: 13px; }
+    .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
 
-    /* Layout */
+    /* KPI Highlights */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .kpi-label { font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+    .kpi-val { font-size: 26px; font-weight: 700; margin-top: 6px; }
+
+    /* Main Grid */
     .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
     @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
     .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 
-    /* Products Table */
+    /* Products Catalog */
     .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    .filter-btn { background: #334155; border: none; color: var(--text); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+    .filter-btn { background: #334155; border: none; color: var(--text); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; }
     .filter-btn.active, .filter-btn:hover { background: var(--primary); }
-    
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { text-align: left; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 600; }
-    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    tr:hover td { background: rgba(255,255,255,0.02); }
 
-    .stock-badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; display: inline-block; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .product-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
+    .product-card:hover { border-color: var(--primary); background: rgba(59, 130, 246, 0.03); }
+    .product-name { font-weight: 600; font-size: 14px; margin-bottom: 6px; line-height: 1.3; }
+    .product-meta { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .product-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .product-price { font-size: 18px; font-weight: 700; color: var(--success); }
+
+    .stock-badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
     .stock-ok { background: rgba(16, 185, 129, 0.15); color: var(--success); }
     .stock-low { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
     .stock-critical { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 
-    /* Form Controls */
+    /* Forms */
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
-    select, input { width: 100%; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 8px; font-size: 13px; outline: none; }
-    select:focus, input:focus { border-color: var(--primary); }
-    .btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 8px; }
-    .btn-primary:hover { background: var(--primary-hover); }
+    input, select { width: 100%; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 8px; font-size: 13px; outline: none; }
+    input:focus, select:focus { border-color: var(--primary); }
 
-    /* Order list */
-    .order-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-    .order-item:last-child { border-bottom: none; }
-    .order-id { font-weight: 600; color: var(--primary); }
-    .order-date { font-size: 11px; color: var(--muted); }
-    .order-total { font-weight: 700; color: var(--success); font-size: 14px; }
+    /* Modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 440px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); position: relative; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+    .modal-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+    .modal-tab { flex: 1; padding: 10px; background: none; border: none; color: var(--muted); font-weight: 600; font-size: 14px; cursor: pointer; text-align: center; }
+    .modal-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-    /* Toast Notification */
-    #toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; border: 1px solid var(--success); color: var(--text); padding: 14px 20px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-size: 13px; display: none; z-index: 100; }
+    /* Toast */
+    #toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; border: 1px solid var(--success); color: var(--text); padding: 14px 20px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-size: 13px; display: none; z-index: 2000; }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Top Header -->
     <header>
       <div class="brand">
-        <h1 style="font-size: 22px; font-weight: 700;">RetailHub Storefront & Analytics</h1>
-        <span class="badge-stack">SQL • .NET • Python</span>
+        <span style="font-size: 28px;">🛍️</span>
+        <div>
+          <h1 style="font-size: 20px; font-weight: 700;">RetailHub Storefront & Customer Portal</h1>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+            <span class="badge-stack">SQL Database</span>
+            <span class="badge-stack">.NET C#</span>
+            <span class="badge-stack">Python REST API</span>
+          </div>
+        </div>
       </div>
-      <div class="status-pill">
-        <div class="status-dot"></div>
-        <span id="api-status">Connected to SQLite Database</span>
+
+      <!-- Auth Navigation Bar -->
+      <div class="nav-actions" id="auth-actions">
+        <!-- Logged Out State -->
+        <div id="logged-out-view" style="display: flex; gap: 8px;">
+          <button class="btn btn-outline" onclick="openAuthModal('login')">Sign In</button>
+          <button class="btn btn-primary" onclick="openAuthModal('register')">Register Account</button>
+        </div>
+
+        <!-- Logged In State -->
+        <div id="logged-in-view" style="display: none; align-items: center; gap: 10px;">
+          <div class="user-pill">
+            <div class="user-avatar" id="user-avatar-char">U</div>
+            <div>
+              <strong id="user-display-name">User Name</strong>
+              <span id="user-role-badge" style="font-size: 11px; color: var(--muted); margin-left: 4px;">(Customer)</span>
+            </div>
+          </div>
+          <button class="btn btn-outline" onclick="openMyOrdersModal()">📦 My Orders</button>
+          <button class="btn btn-danger" onclick="logoutUser()">Log Out</button>
+        </div>
       </div>
     </header>
 
-    <!-- Key Performance Indicators -->
+    <!-- Metrics Banner -->
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-label">Total Store Revenue</div>
-        <div class="kpi-val" id="kpi-revenue">$974.95</div>
-        <div class="kpi-sub" id="kpi-orders-count">7 orders processed</div>
+        <div class="kpi-label">Store Revenue</div>
+        <div class="kpi-val" id="kpi-revenue" style="color: var(--success);">$974.95</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Average Order Value</div>
-        <div class="kpi-val" id="kpi-aov">$139.28</div>
-        <div class="kpi-sub">Across all completed sales</div>
+        <div class="kpi-label">Registered Customers</div>
+        <div class="kpi-val" id="kpi-customers">6 Users</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Catalog Products</div>
-        <div class="kpi-val" id="kpi-products">11</div>
-        <div class="kpi-sub">Across 4 distinct categories</div>
+        <div class="kpi-label">Active Catalog</div>
+        <div class="kpi-val" id="kpi-products">12 Items</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Stock Status</div>
-        <div class="kpi-val" id="kpi-alerts" style="color: var(--warning);">3 Low</div>
-        <div class="kpi-sub">Needs restock attention</div>
+        <div class="kpi-label">Stock Health</div>
+        <div class="kpi-val" id="kpi-alerts" style="color: var(--warning);">3 Low Stock</div>
       </div>
     </div>
 
     <!-- Main Workspace -->
     <div class="main-grid">
-      <!-- Left: Products Catalog Table -->
+      <!-- Left: Products Catalog -->
       <div>
         <div class="card">
           <div class="card-title">
-            <span>📦 Product Catalog & Real-Time Stock</span>
-            <button class="filter-btn" onclick="fetchData()">🔄 Refresh</button>
+            <span>📦 Product Catalog</span>
+            <div class="filter-bar" style="margin-bottom: 0;">
+              <button class="filter-btn active" onclick="filterCategory('All', this)">All</button>
+              <button class="filter-btn" onclick="filterCategory('Electronics', this)">Electronics</button>
+              <button class="filter-btn" onclick="filterCategory('Home & Office', this)">Home & Office</button>
+              <button class="filter-btn" onclick="filterCategory('Apparel', this)">Apparel</button>
+              <button class="filter-btn" onclick="filterCategory('Beverages', this)">Beverages</button>
+            </div>
           </div>
 
-          <div class="filter-bar">
-            <button class="filter-btn active" onclick="filterCategory('All', this)">All Items</button>
-            <button class="filter-btn" onclick="filterCategory('Electronics', this)">Electronics</button>
-            <button class="filter-btn" onclick="filterCategory('Home & Office', this)">Home & Office</button>
-            <button class="filter-btn" onclick="filterCategory('Apparel', this)">Apparel</button>
-            <button class="filter-btn" onclick="filterCategory('Beverages', this)">Beverages</button>
+          <div class="product-grid" id="product-grid">
+            <!-- Dynamically populated -->
           </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Product Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="products-table-body">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
         </div>
       </div>
 
-      <!-- Right: Place Order & Recent Transactions -->
+      <!-- Right: Checkout & Quick Order -->
       <div>
-        <!-- Order Placement Form -->
+        <!-- Instant Checkout Form -->
         <div class="card">
-          <div class="card-title">⚡ Place Order (SQL Transaction)</div>
+          <div class="card-title">🛒 Instant Checkout (SQL Transaction)</div>
+
+          <div id="checkout-auth-reminder" style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span>💡 Sign in to tie orders to your account:</span>
+            <button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px;" onclick="openAuthModal('register')">Register / Login</button>
+          </div>
+
           <form id="order-form" onsubmit="handlePlaceOrder(event)">
             <div class="form-group">
-              <label for="select-customer">Select Customer</label>
+              <label for="select-customer">Customer Account</label>
               <select id="select-customer" required>
-                <option value="1">Alice Johnson (Seattle)</option>
-                <option value="2">Bob Smith (Austin)</option>
-                <option value="3">Carlos Mendez (San Francisco)</option>
-                <option value="4">Diana Patel (New York)</option>
-                <option value="5">Ethan Wright (Chicago)</option>
+                <!-- Dynamically populated or locked to logged in user -->
               </select>
             </div>
 
             <div class="form-group">
-              <label for="select-product">Select Product</label>
+              <label for="select-product">Selected Product</label>
               <select id="select-product" onchange="updatePricePreview()" required>
                 <!-- Populated via JS -->
               </select>
@@ -176,36 +199,112 @@
 
             <div class="form-group">
               <label for="input-quantity">Quantity</label>
-              <input type="number" id="input-quantity" min="1" max="50" value="1" onchange="updatePricePreview()" required />
+              <input type="number" id="input-quantity" min="1" max="20" value="1" onchange="updatePricePreview()" required />
             </div>
 
-            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; font-size: 13px;">
-              <span style="color: var(--muted);">Estimated Total:</span>
-              <strong id="price-preview" style="color: var(--success); font-size: 15px;">$0.00</strong>
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--muted); font-size: 13px;">Estimated Total:</span>
+              <strong id="price-preview" style="color: var(--success); font-size: 18px;">$0.00</strong>
             </div>
 
-            <button type="submit" class="btn-primary" id="btn-submit-order">Place Order</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">Place Order (Commit to SQL)</button>
           </form>
         </div>
 
-        <!-- Recent Orders Feed -->
+        <!-- Recent Store Orders -->
         <div class="card">
-          <div class="card-title">📋 Recent Sales Orders</div>
-          <div id="orders-feed">
-            <!-- Dynamically populated -->
+          <div class="card-title">📜 Recent Store Activity</div>
+          <div id="recent-orders-list" style="font-size: 13px;">
+            <!-- Populated -->
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="toast">Order placed successfully!</div>
+  <!-- AUTHENTICATION MODAL (Register / Sign In) -->
+  <div class="modal-backdrop" id="auth-modal" onclick="if(event.target===this) closeAuthModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+      
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-register-btn" onclick="switchAuthTab('register')">Create Account</button>
+        <button class="modal-tab" id="tab-login-btn" onclick="switchAuthTab('login')">Sign In</button>
+      </div>
+
+      <!-- Registration Form -->
+      <form id="form-register" onsubmit="handleRegisterSubmit(event)">
+        <div class="form-group">
+          <label for="reg-name">Full Name *</label>
+          <input type="text" id="reg-name" placeholder="e.g. John Doe" required />
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email Address *</label>
+          <input type="email" id="reg-email" placeholder="john@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password *</label>
+          <input type="password" id="reg-password" placeholder="At least 4 characters" minlength="4" required />
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label for="reg-city">City / Region</label>
+            <input type="text" id="reg-city" placeholder="e.g. Seattle" />
+          </div>
+          <div class="form-group">
+            <label for="reg-phone">Phone (optional)</label>
+            <input type="text" id="reg-phone" placeholder="+1-555-..." />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 6px;">Register & Sign In</button>
+      </form>
+
+      <!-- Login Form -->
+      <form id="form-login" style="display: none;" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label for="login-email">Email Address *</label>
+          <input type="email" id="login-email" placeholder="alice.johnson@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password *</label>
+          <input type="password" id="login-password" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 6px;">Sign In</button>
+
+        <!-- Quick Demo Accounts -->
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted);">
+          <span>Quick Demo Logins (Password: <code>password123</code>):</span>
+          <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+            <button type="button" class="filter-btn" onclick="quickFillLogin('alice.johnson@example.com', 'password123')">Alice (Seattle)</button>
+            <button type="button" class="filter-btn" onclick="quickFillLogin('bob.smith@example.com', 'password123')">Bob (Austin)</button>
+            <button type="button" class="filter-btn" onclick="quickFillLogin('admin@retailhub.com', 'admin123')">Admin HQ</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MY ORDERS MODAL -->
+  <div class="modal-backdrop" id="orders-modal" onclick="if(event.target===this) closeMyOrdersModal()">
+    <div class="modal" style="max-width: 550px;">
+      <button class="modal-close" onclick="closeMyOrdersModal()">&times;</button>
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 14px;">📦 My Order History</h3>
+      <div id="my-orders-list" style="max-height: 350px; overflow-y: auto; padding-right: 4px;">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Notification</div>
 
   <script>
-    // State data
+    // State
+    let currentUser = null;
     let products = [
       { product_id: 1, sku: 'ELEC-001', name: 'Wireless Noise-Cancelling Headphones', category: 'Electronics', unit_price: 149.99, stock_quantity: 45 },
-      { product_id: 2, sku: 'ELEC-002', name: 'Mechanical RGB Gaming Keyboard', category: 'Electronics', unit_price: 89.50, stock_quantity: 59 },
+      { product_id: 2, sku: 'ELEC-002', name: 'Mechanical RGB Gaming Keyboard', category: 'Electronics', unit_price: 89.50, stock_quantity: 60 },
       { product_id: 3, sku: 'ELEC-003', name: 'Ergonomic Vertical Mouse', category: 'Electronics', unit_price: 45.00, stock_quantity: 8 },
       { product_id: 4, sku: 'ELEC-004', name: '4K Ultra-HD Webcam', category: 'Electronics', unit_price: 79.99, stock_quantity: 5 },
       { product_id: 5, sku: 'OFF-001', name: 'Adjustable Dual Monitor Arm', category: 'Home & Office', unit_price: 65.00, stock_quantity: 25 },
@@ -217,14 +316,33 @@
       { product_id: 11, sku: 'BEV-002', name: 'Smart Temperature-Control Ceramic Mug', category: 'Beverages', unit_price: 55.00, stock_quantity: 4 }
     ];
 
-    let orders = [
-      { order_id: 7, customer: 'Alice Johnson', total_amount: 89.50, status: 'COMPLETED', date: 'Just now' },
-      { order_id: 6, customer: 'Ethan Wright', total_amount: 119.98, status: 'COMPLETED', date: '2026-11-02' },
-      { order_id: 5, customer: 'Diana Patel', total_amount: 214.99, status: 'COMPLETED', date: '2026-10-25' },
-      { order_id: 4, customer: 'Alice Johnson', total_amount: 55.00, status: 'COMPLETED', date: '2026-10-18' }
+    let customers = [
+      { customer_id: 1, full_name: 'Alice Johnson', email: 'alice.johnson@example.com', city: 'Seattle', role: 'CUSTOMER' },
+      { customer_id: 2, full_name: 'Bob Smith', email: 'bob.smith@example.com', city: 'Austin', role: 'CUSTOMER' },
+      { customer_id: 3, full_name: 'Carlos Mendez', email: 'carlos.m@example.com', city: 'San Francisco', role: 'CUSTOMER' },
+      { customer_id: 4, full_name: 'Diana Patel', email: 'diana.patel@example.com', city: 'New York', role: 'CUSTOMER' },
+      { customer_id: 5, full_name: 'Ethan Wright', email: 'ethan.w@example.com', city: 'Chicago', role: 'CUSTOMER' },
+      { customer_id: 6, full_name: 'Admin User', email: 'admin@retailhub.com', city: 'HQ', role: 'ADMIN' }
+    ];
+
+    let storeOrders = [
+      { order_id: 6, customer: 'Ethan Wright', total_amount: 119.98, order_date: '2026-11-02' },
+      { order_id: 5, customer: 'Diana Patel', total_amount: 214.99, order_date: '2026-10-25' },
+      { order_id: 4, customer: 'Alice Johnson', total_amount: 55.00, order_date: '2026-10-18' }
     ];
 
     let currentCategory = 'All';
+
+    // Initialization
+    function init() {
+      // Check stored session
+      const savedUser = localStorage.getItem('retailhub_user');
+      if (savedUser) {
+        try { currentUser = JSON.parse(savedUser); } catch(e){}
+      }
+      fetchData();
+      updateUserUI();
+    }
 
     async function fetchData() {
       try {
@@ -234,40 +352,46 @@
           if (data.products) products = data.products;
         }
 
-        const analyticsRes = await fetch('/api/analytics');
-        if (analyticsRes.ok) {
-          const data = await analyticsRes.json();
-          if (data.summary) {
-            document.getElementById('kpi-revenue').textContent = '$' + Number(data.summary.total_revenue).toFixed(2);
-            document.getElementById('kpi-orders-count').textContent = data.summary.total_orders + ' orders processed';
-            document.getElementById('kpi-aov').textContent = '$' + Number(data.summary.avg_order_value).toFixed(2);
-          }
-          if (data.low_stock_alerts) {
-            document.getElementById('kpi-alerts').textContent = data.low_stock_alerts.length + ' Low';
-          }
+        const custRes = await fetch('/api/customers');
+        if (custRes.ok) {
+          const data = await custRes.json();
+          if (data.customers) customers = data.customers;
         }
 
         const ordRes = await fetch('/api/orders');
         if (ordRes.ok) {
           const data = await ordRes.json();
-          if (data.orders) orders = data.orders.slice(0, 5);
+          if (data.orders) storeOrders = data.orders.slice(0, 5);
         }
-      } catch (e) {
-        console.log("Local offline simulation mode or direct standalone view active.");
-      }
-      render();
-    }
 
-    function render() {
+        const analyticsRes = await fetch('/api/analytics');
+        if (analyticsRes.ok) {
+          const data = await analyticsRes.json();
+          if (data.summary) {
+            document.getElementById('kpi-revenue').textContent = '$' + Number(data.summary.total_revenue).toFixed(2);
+          }
+          if (data.low_stock_alerts) {
+            document.getElementById('kpi-alerts').textContent = data.low_stock_alerts.length + ' Low Stock';
+          }
+        }
+      } catch (err) {
+        console.log("Operating in client-side / GitHub Pages mode.");
+      }
+
+      document.getElementById('kpi-customers').textContent = customers.length + ' Users';
+      document.getElementById('kpi-products').textContent = products.length + ' Items';
+
       renderProducts();
       renderProductSelect();
-      renderOrders();
+      renderCustomerSelect();
+      renderRecentOrders();
       updatePricePreview();
     }
 
+    // UI Renderers
     function renderProducts() {
-      const tbody = document.getElementById('products-table-body');
-      tbody.innerHTML = '';
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = '';
 
       const filtered = currentCategory === 'All' 
         ? products 
@@ -275,27 +399,32 @@
 
       filtered.forEach(p => {
         let stockClass = 'stock-ok';
-        let stockLabel = p.stock_quantity + ' units';
+        let stockLabel = p.stock_quantity + ' in stock';
         if (p.stock_quantity <= 5) {
           stockClass = 'stock-critical';
-          stockLabel = p.stock_quantity + ' (Critical)';
+          stockLabel = p.stock_quantity + ' left (Critical)';
         } else if (p.stock_quantity <= 10) {
           stockClass = 'stock-low';
-          stockLabel = p.stock_quantity + ' (Low)';
+          stockLabel = p.stock_quantity + ' left (Low)';
         }
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><code>${p.sku}</code></td>
-          <td><strong>${p.name}</strong></td>
-          <td><span style="color: var(--muted); font-size: 12px;">${p.category}</span></td>
-          <td><strong>$${Number(p.unit_price).toFixed(2)}</strong></td>
-          <td><span class="stock-badge ${stockClass}">${stockLabel}</span></td>
-          <td>
-            <button class="filter-btn" style="padding: 4px 8px;" onclick="quickSelectProduct(${p.product_id})">Select</button>
-          </td>
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+              <span class="stock-badge ${stockClass}">${stockLabel}</span>
+              <code style="font-size: 11px; color: var(--muted);">${p.sku}</code>
+            </div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-meta">${p.category}</div>
+          </div>
+          <div class="product-footer">
+            <span class="product-price">$${Number(p.unit_price).toFixed(2)}</span>
+            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 12px;" onclick="selectProductForCheckout(${p.product_id})">Select</button>
+          </div>
         `;
-        tbody.appendChild(tr);
+        grid.appendChild(card);
       });
     }
 
@@ -305,42 +434,53 @@
       products.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.product_id;
-        opt.textContent = `${p.name} ($${Number(p.unit_price).toFixed(2)}) - ${p.stock_quantity} left`;
+        opt.textContent = `${p.name} ($${Number(p.unit_price).toFixed(2)}) - ${p.stock_quantity} available`;
         select.appendChild(opt);
       });
     }
 
-    function renderOrders() {
-      const feed = document.getElementById('orders-feed');
-      feed.innerHTML = '';
-      orders.forEach(o => {
-        const div = document.createElement('div');
-        div.className = 'order-item';
-        div.innerHTML = `
-          <div>
-            <div class="order-id">Order #${o.order_id} <span style="color: var(--text); font-weight: normal;">• ${o.customer || 'Customer'}</span></div>
-            <div class="order-date">${o.order_date || o.date || 'Today'}</div>
-          </div>
-          <div class="order-total">$${Number(o.total_amount).toFixed(2)}</div>
-        `;
-        feed.appendChild(div);
-      });
-    }
+    function renderCustomerSelect() {
+      const select = document.getElementById('select-customer');
+      select.innerHTML = '';
 
-    function updatePricePreview() {
-      const prodId = parseInt(document.getElementById('select-product').value);
-      const qty = parseInt(document.getElementById('input-quantity').value) || 1;
-      const prod = products.find(p => p.product_id === prodId);
-      if (prod) {
-        const total = (prod.unit_price * qty).toFixed(2);
-        document.getElementById('price-preview').textContent = '$' + total;
+      if (currentUser) {
+        // Locked to logged in user
+        const opt = document.createElement('option');
+        opt.value = currentUser.customer_id;
+        opt.textContent = `Ordering as: ${currentUser.full_name} (${currentUser.email})`;
+        select.appendChild(opt);
+        select.disabled = true;
+      } else {
+        select.disabled = false;
+        customers.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.customer_id;
+          opt.textContent = `${c.full_name} (${c.city || 'Customer'})`;
+          select.appendChild(opt);
+        });
       }
     }
 
-    function quickSelectProduct(id) {
-      document.getElementById('select-product').value = id;
-      updatePricePreview();
-      document.getElementById('input-quantity').focus();
+    function renderRecentOrders() {
+      const container = document.getElementById('recent-orders-list');
+      container.innerHTML = '';
+      storeOrders.slice(0, 4).forEach(o => {
+        const item = document.createElement('div');
+        item.style.padding = '10px 0';
+        item.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+        item.style.display = 'flex';
+        item.style.justifyContent = 'space-between';
+        item.style.alignItems = 'center';
+        item.innerHTML = `
+          <div>
+            <strong style="color: var(--primary);">Order #${o.order_id}</strong>
+            <span style="color: var(--muted); margin-left: 4px;">• ${o.customer || 'Customer'}</span>
+            <div style="font-size: 11px; color: var(--muted);">${o.order_date || 'Recent'}</div>
+          </div>
+          <strong style="color: var(--success);">$${Number(o.total_amount).toFixed(2)}</strong>
+        `;
+        container.appendChild(item);
+      });
     }
 
     function filterCategory(cat, btn) {
@@ -350,10 +490,217 @@
       renderProducts();
     }
 
+    function selectProductForCheckout(id) {
+      document.getElementById('select-product').value = id;
+      updatePricePreview();
+      document.getElementById('input-quantity').focus();
+    }
+
+    function updatePricePreview() {
+      const pid = parseInt(document.getElementById('select-product').value);
+      const qty = parseInt(document.getElementById('input-quantity').value) || 1;
+      const p = products.find(x => x.product_id === pid);
+      if (p) {
+        const total = (p.unit_price * qty).toFixed(2);
+        document.getElementById('price-preview').textContent = '$' + total;
+      }
+    }
+
+    // Authentication Handlers
+    function openAuthModal(tab = 'register') {
+      document.getElementById('auth-modal').style.display = 'flex';
+      switchAuthTab(tab);
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').style.display = 'none';
+    }
+
+    function switchAuthTab(tab) {
+      if (tab === 'register') {
+        document.getElementById('tab-register-btn').className = 'modal-tab active';
+        document.getElementById('tab-login-btn').className = 'modal-tab';
+        document.getElementById('form-register').style.display = 'block';
+        document.getElementById('form-login').style.display = 'none';
+      } else {
+        document.getElementById('tab-register-btn').className = 'modal-tab';
+        document.getElementById('tab-login-btn').className = 'modal-tab active';
+        document.getElementById('form-register').style.display = 'none';
+        document.getElementById('form-login').style.display = 'block';
+      }
+    }
+
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const fullName = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
+      const password = document.getElementById('reg-password').value;
+      const city = document.getElementById('reg-city').value.trim() || 'Online';
+      const phone = document.getElementById('reg-phone').value.trim();
+
+      // Check duplicate locally
+      if (customers.some(c => c.email.toLowerCase() === email)) {
+        showToast('Error: This email is already registered!', true);
+        return;
+      }
+
+      // Try server registration
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_name: fullName, email: email, password: password, city: city, phone: phone })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          loginSuccess(data.user);
+          closeAuthModal();
+          showToast(`Welcome to RetailHub, ${fullName}! Account created.`);
+          return;
+        } else {
+          const err = await res.json();
+          showToast('Error: ' + (err.error || 'Registration failed'), true);
+          return;
+        }
+      } catch (err) {
+        // Fallback client-side registration (e.g. for GitHub Pages)
+      }
+
+      const newId = customers.length > 0 ? (Math.max(...customers.map(c => c.customer_id)) + 1) : 1;
+      const newUser = { customer_id: newId, full_name: fullName, email: email, city: city, role: 'CUSTOMER' };
+      customers.push(newUser);
+      loginSuccess(newUser);
+      closeAuthModal();
+      showToast(`Welcome, ${fullName}! Account created in local storage.`);
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: password })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          loginSuccess(data.user);
+          closeAuthModal();
+          showToast(`Welcome back, ${data.user.full_name}!`);
+          return;
+        } else {
+          const err = await res.json();
+          showToast('Login Failed: ' + (err.error || 'Invalid credentials'), true);
+          return;
+        }
+      } catch (err) {
+        // Fallback client-side login
+      }
+
+      const found = customers.find(c => c.email.toLowerCase() === email);
+      if (found) {
+        loginSuccess(found);
+        closeAuthModal();
+        showToast(`Welcome back, ${found.full_name}!`);
+      } else {
+        showToast('Login failed: Account not found.', true);
+      }
+    }
+
+    function quickFillLogin(email, pwd) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = pwd;
+    }
+
+    function loginSuccess(user) {
+      currentUser = user;
+      localStorage.setItem('retailhub_user', JSON.stringify(user));
+      updateUserUI();
+      renderCustomerSelect();
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      localStorage.removeItem('retailhub_user');
+      updateUserUI();
+      renderCustomerSelect();
+      showToast('You have been logged out.');
+    }
+
+    function updateUserUI() {
+      const loggedOutView = document.getElementById('logged-out-view');
+      const loggedInView = document.getElementById('logged-in-view');
+      const reminder = document.getElementById('checkout-auth-reminder');
+
+      if (currentUser) {
+        loggedOutView.style.display = 'none';
+        loggedInView.style.display = 'flex';
+        reminder.style.display = 'none';
+
+        document.getElementById('user-display-name').textContent = currentUser.full_name;
+        document.getElementById('user-avatar-char').textContent = currentUser.full_name.charAt(0).toUpperCase();
+        document.getElementById('user-role-badge').textContent = `(${currentUser.role || 'Customer'})`;
+      } else {
+        loggedOutView.style.display = 'flex';
+        loggedInView.style.display = 'none';
+        reminder.style.display = 'flex';
+      }
+    }
+
+    // My Orders Modal
+    async function openMyOrdersModal() {
+      if (!currentUser) return;
+      document.getElementById('orders-modal').style.display = 'flex';
+      const container = document.getElementById('my-orders-list');
+      container.innerHTML = '<div style="color: var(--muted); padding: 10px;">Loading your orders...</div>';
+
+      try {
+        const res = await fetch(`/api/user/orders?customer_id=${currentUser.customer_id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.orders && data.orders.length > 0) {
+            container.innerHTML = '';
+            data.orders.forEach(o => {
+              container.innerHTML += `
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <strong style="color: var(--primary);">Order #${o.order_id}</strong>
+                    <span style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(16,185,129,0.15); color: var(--success); font-weight: 600;">${o.status}</span>
+                  </div>
+                  <div style="font-size: 13px; color: var(--text);">${o.items_summary || 'Purchased Products'}</div>
+                  <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted);">
+                    <span>${o.order_date}</span>
+                    <strong style="color: var(--success); font-size: 14px;">$${Number(o.total_amount).toFixed(2)}</strong>
+                  </div>
+                </div>
+              `;
+            });
+            return;
+          }
+        }
+      } catch (err) {}
+
+      // Fallback
+      container.innerHTML = `
+        <div style="text-align: center; padding: 24px; color: var(--muted);">
+          No orders found yet for <strong>${currentUser.full_name}</strong>.
+          <div style="margin-top: 8px;">Pick a product from the catalog to place your first order!</div>
+        </div>
+      `;
+    }
+
+    function closeMyOrdersModal() {
+      document.getElementById('orders-modal').style.display = 'none';
+    }
+
+    // Order Placement
     async function handlePlaceOrder(e) {
       e.preventDefault();
-      const customerId = parseInt(document.getElementById('select-customer').value);
-      const custText = document.getElementById('select-customer').selectedOptions[0].text.split('(')[0].trim();
+      const customerId = currentUser ? currentUser.customer_id : parseInt(document.getElementById('select-customer').value);
+      const custName = currentUser ? currentUser.full_name : document.getElementById('select-customer').selectedOptions[0].text.split('(')[0].trim();
       const productId = parseInt(document.getElementById('select-product').value);
       const quantity = parseInt(document.getElementById('input-quantity').value);
 
@@ -363,7 +710,6 @@
         return;
       }
 
-      // Try sending to live API server
       try {
         const res = await fetch('/api/orders', {
           method: 'POST',
@@ -372,33 +718,28 @@
         });
         if (res.ok) {
           const result = await res.json();
-          showToast(`Order #${result.order_id} created in SQLite! Stock updated.`);
+          showToast(`Order #${result.order_id} confirmed for ${custName}! Stock updated in SQLite.`);
           fetchData();
           return;
         }
-      } catch (err) {
-        // Fallback for standalone preview
-      }
+      } catch (err) {}
 
-      // Local optimistic update
+      // Optimistic client-side fallback
       prod.stock_quantity -= quantity;
       const total = Number((prod.unit_price * quantity).toFixed(2));
-      const newOrderId = orders.length > 0 ? (Math.max(...orders.map(o => o.order_id)) + 1) : 1;
-      orders.unshift({
+      const newOrderId = storeOrders.length > 0 ? (Math.max(...storeOrders.map(o => o.order_id)) + 1) : 1;
+
+      storeOrders.unshift({
         order_id: newOrderId,
-        customer: custText,
+        customer: custName,
         total_amount: total,
-        status: 'COMPLETED',
-        date: 'Just now'
+        order_date: 'Just now'
       });
 
-      // Update KPIs
-      const currRev = parseFloat(document.getElementById('kpi-revenue').textContent.replace('$', '').replace(',', ''));
-      document.getElementById('kpi-revenue').textContent = '$' + (currRev + total).toFixed(2);
-      document.getElementById('kpi-orders-count').textContent = orders.length + ' orders processed';
-
-      showToast(`Order #${newOrderId} placed successfully! ${quantity}x ${prod.name}`);
-      render();
+      showToast(`Order #${newOrderId} confirmed! ${quantity}x ${prod.name}`);
+      renderProducts();
+      renderRecentOrders();
+      updatePricePreview();
     }
 
     function showToast(msg, isError = false) {
@@ -406,11 +747,10 @@
       toast.textContent = msg;
       toast.style.borderColor = isError ? 'var(--danger)' : 'var(--success)';
       toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+      setTimeout(() => { toast.style.display = 'none'; }, 4000);
     }
 
-    // Initialize
-    fetchData();
+    init();
   </script>
 </body>
 </html>

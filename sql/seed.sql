@@ -1,5 +1,7 @@
 -- ============================================================
--- Seed Data for RetailHub System
+-- Seed Data for RetailHub System with User Authentication
+-- Default password for all demo accounts is: password123
+-- (SHA-256: ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f)
 -- ============================================================
 
 -- Categories
@@ -23,13 +25,14 @@ INSERT OR IGNORE INTO products (product_id, category_id, sku, name, unit_price, 
 (10, 4, 'BEV-001', 'Single-Origin Ethiopian Coffee Beans (1lb)', 18.50, 80, 1),
 (11, 4, 'BEV-002', 'Smart Temperature-Control Ceramic Mug', 55.00, 4, 1);
 
--- Customers
-INSERT OR IGNORE INTO customers (customer_id, full_name, email, phone, city) VALUES
-(1, 'Alice Johnson', 'alice.johnson@example.com', '+1-555-0101', 'Seattle'),
-(2, 'Bob Smith', 'bob.smith@example.com', '+1-555-0102', 'Austin'),
-(3, 'Carlos Mendez', 'carlos.m@example.com', '+1-555-0103', 'San Francisco'),
-(4, 'Diana Patel', 'diana.patel@example.com', '+1-555-0104', 'New York'),
-(5, 'Ethan Wright', 'ethan.w@example.com', '+1-555-0105', 'Chicago');
+-- Customers / Registered Users
+INSERT OR IGNORE INTO customers (customer_id, full_name, email, password_hash, phone, city, role) VALUES
+(1, 'Alice Johnson', 'alice.johnson@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0101', 'Seattle', 'CUSTOMER'),
+(2, 'Bob Smith', 'bob.smith@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0102', 'Austin', 'CUSTOMER'),
+(3, 'Carlos Mendez', 'carlos.m@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0103', 'San Francisco', 'CUSTOMER'),
+(4, 'Diana Patel', 'diana.patel@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0104', 'New York', 'CUSTOMER'),
+(5, 'Ethan Wright', 'ethan.w@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '+1-555-0105', 'Chicago', 'CUSTOMER'),
+(6, 'Admin User', 'admin@retailhub.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', '+1-555-0000', 'HQ', 'ADMIN');
 
 -- Orders
 INSERT OR IGNORE INTO orders (order_id, customer_id, order_date, total_amount, status) VALUES
@@ -42,21 +45,15 @@ INSERT OR IGNORE INTO orders (order_id, customer_id, order_date, total_amount, s
 
 -- Order Items
 INSERT OR IGNORE INTO order_items (item_id, order_id, product_id, quantity, unit_price) VALUES
--- Order 1: Alice bought Headphones and Mechanical Keyboard
 (1, 1, 1, 1, 149.99),
 (2, 1, 2, 1, 89.50),
--- Order 2: Bob bought Keyboard
 (3, 2, 2, 1, 89.50),
--- Order 3: Carlos bought Vertical Mouse, Monitor Arm, Coffee
 (4, 3, 3, 1, 45.00),
 (5, 3, 5, 1, 65.00),
 (6, 3, 10, 3, 18.50),
--- Order 4: Alice bought Smart Mug
 (7, 4, 11, 1, 55.00),
--- Order 5: Diana bought Headphones and Cable Tray
 (8, 5, 1, 1, 149.99),
 (9, 5, 7, 1, 19.99),
 (10, 5, 6, 1, 32.50),
--- Order 6: Ethan bought Hoodie and Backpack
 (11, 6, 8, 1, 49.99),
 (12, 6, 9, 1, 69.00);

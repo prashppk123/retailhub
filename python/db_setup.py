@@ -1,17 +1,12 @@
 """
 RetailHub - Database Setup Script
-Demonstrates Python sqlite3 fundamentals:
- - Connecting to SQLite database
- - Executing multi-statement SQL scripts (executescript)
- - Error handling with try/except
- - Path resolution across directories
+Reinitializes and migrates SQLite database schema with User Authentication.
 """
 
 import os
 import sqlite3
 import sys
 
-# Directory Paths
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
 DB_DIR = os.path.join(PROJECT_ROOT, "database")
@@ -20,12 +15,11 @@ SCHEMA_PATH = os.path.join(PROJECT_ROOT, "sql", "schema.sql")
 SEED_PATH = os.path.join(PROJECT_ROOT, "sql", "seed.sql")
 
 
-def initialize_database():
+def initialize_database(reset=False):
     print("=" * 60)
     print(" [Python] Initializing RetailHub SQLite Database")
     print("=" * 60)
 
-    # Ensure database directory exists
     os.makedirs(DB_DIR, exist_ok=True)
 
     if not os.path.exists(SCHEMA_PATH):
@@ -33,23 +27,33 @@ def initialize_database():
         sys.exit(1)
 
     try:
-        # Connect to SQLite (creates file if not exists)
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
+        # Check if migration is needed for customers table (password_hash)
+        cursor.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='customers'")
+        table_exists = cursor.fetchone()[0] > 0
+
+        if table_exists:
+            cursor.execute("PRAGMA table_info(customers)")
+            columns = [col[1] for col in cursor.fetchall()]
+            if "password_hash" not in columns or reset:
+                print("-> Migrating customers table to support authentication...")
+                cursor.execute("DROP TABLE IF EXISTS order_items")
+                cursor.execute("DROP TABLE IF EXISTS orders")
+                cursor.execute("DROP TABLE IF EXISTS customers")
+
         # Read and apply schema
-        print(f"-> Reading schema: {os.path.basename(SCHEMA_PATH)}...")
+        print(f"-> Applying schema: {os.path.basename(SCHEMA_PATH)}...")
         with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
-            schema_sql = f.read()
-        cursor.executescript(schema_sql)
+            cursor.executescript(f.read())
         print("   [OK] Schema tables, constraints, and views created.")
 
         # Read and apply seed data
         if os.path.exists(SEED_PATH):
-            print(f"-> Reading seed data: {os.path.basename(SEED_PATH)}...")
+            print(f"-> Loading seed data: {os.path.basename(SEED_PATH)}...")
             with open(SEED_PATH, "r", encoding="utf-8") as f:
-                seed_sql = f.read()
-            cursor.executescript(seed_sql)
+                cursor.executescript(f.read())
             print("   [OK] Seed data inserted.")
 
         conn.commit()

@@ -100,7 +100,7 @@ namespace RetailHub.Services
         public List<Customer> GetCustomers()
         {
             var list = new List<Customer>();
-            string sql = "SELECT customer_id, full_name, email, city FROM customers ORDER BY customer_id";
+            string sql = "SELECT customer_id, full_name, email, city, role FROM customers ORDER BY customer_id";
             string json = RunBridge(string.Format("query \"{0}\"", sql));
 
             var root = _serializer.Deserialize<Dictionary<string, object>>(json);
@@ -115,12 +115,26 @@ namespace RetailHub.Services
                             Convert.ToInt32(row["customer_id"]),
                             Convert.ToString(row["full_name"]),
                             Convert.ToString(row["email"]),
-                            Convert.ToString(row["city"])
+                            Convert.ToString(row["city"]),
+                            row.ContainsKey("role") ? Convert.ToString(row["role"]) : "CUSTOMER"
                         ));
                     }
                 }
             }
             return list;
+        }
+
+        public Dictionary<string, object> RegisterCustomer(string fullName, string email, string password, string city, string phone)
+        {
+            string safeName = fullName.Replace("\"", "");
+            string safeEmail = email.Replace("\"", "");
+            string safePwd = password.Replace("\"", "");
+            string safeCity = string.IsNullOrEmpty(city) ? "Online" : city.Replace("\"", "");
+            string safePhone = string.IsNullOrEmpty(phone) ? "" : phone.Replace("\"", "");
+
+            string json = RunBridge(string.Format("register \"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
+                safeName, safeEmail, safePwd, safeCity, safePhone));
+            return _serializer.Deserialize<Dictionary<string, object>>(json);
         }
 
         public List<Order> GetOrders()

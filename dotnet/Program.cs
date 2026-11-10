@@ -49,6 +49,9 @@ namespace RetailHub
                         ViewOrderHistory();
                         break;
                     case "6":
+                        RegisterNewCustomer();
+                        break;
+                    case "7":
                         RunCustomSql();
                         break;
                     case "0":
@@ -56,7 +59,7 @@ namespace RetailHub
                         Console.WriteLine("Exiting RetailHub .NET Manager. Goodbye!");
                         break;
                     default:
-                        Console.WriteLine("Invalid option. Please enter a number between 0 and 6.");
+                        Console.WriteLine("Invalid option. Please enter a number between 0 and 7.");
                         break;
                 }
 
@@ -79,7 +82,8 @@ namespace RetailHub
             Console.WriteLine("  3. Place New Customer Order (SQL Transaction)");
             Console.WriteLine("  4. Restock Existing Product");
             Console.WriteLine("  5. View Customer Orders & Revenue");
-            Console.WriteLine("  6. Run Custom SQL Query");
+            Console.WriteLine("  6. Register New Customer / User Account");
+            Console.WriteLine("  7. Run Custom SQL Query");
             Console.WriteLine("  0. Exit");
             Console.WriteLine("==================================================================");
         }
@@ -238,6 +242,52 @@ namespace RetailHub
             }
             Console.WriteLine(new string('-', 75));
             Console.WriteLine(string.Format("Total orders recorded: {0}", orders.Count));
+        }
+
+        static void RegisterNewCustomer()
+        {
+            Console.WriteLine("--- Register New Customer / User Account ---");
+            Console.Write("Enter Full Name: ");
+            string name = Console.ReadLine();
+            if (name != null) name = name.Trim();
+
+            Console.Write("Enter Email Address: ");
+            string email = Console.ReadLine();
+            if (email != null) email = email.Trim().ToLower();
+
+            Console.Write("Enter Password: ");
+            string password = Console.ReadLine();
+            if (password != null) password = password.Trim();
+
+            Console.Write("Enter City (optional): ");
+            string city = Console.ReadLine();
+            if (city != null) city = city.Trim();
+            if (string.IsNullOrEmpty(city)) city = "Online";
+
+            Console.Write("Enter Phone (optional): ");
+            string phone = Console.ReadLine();
+            if (phone != null) phone = phone.Trim();
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("\n[ERROR] Name, email, and password are required.");
+                return;
+            }
+
+            var result = _db.RegisterCustomer(name, email, password, city, phone);
+            if (result != null && result.ContainsKey("success") && Convert.ToBoolean(result["success"]))
+            {
+                Console.WriteLine("\n==================================================");
+                Console.WriteLine("[SUCCESS] Account created successfully!");
+                Console.WriteLine(string.Format("Customer '{0}' registered with Email '{1}'.", name, email));
+                Console.WriteLine("Password securely hashed and saved in SQLite.");
+                Console.WriteLine("==================================================");
+            }
+            else
+            {
+                string err = result != null && result.ContainsKey("error") ? Convert.ToString(result["error"]) : "Registration failed.";
+                Console.WriteLine(string.Format("\n[ERROR] {0}", err));
+            }
         }
 
         static void RunCustomSql()
