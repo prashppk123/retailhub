@@ -151,6 +151,7 @@
       <div style="display: flex; align-items: center; gap: 12px;">
         <span class="currency-tag">🇮🇳 Currency: INR (₹)</span>
         <span style="color: var(--text-muted);">Express 2-Day Delivery across India</span>
+        <a href="admin.html" style="color: #facc15; text-decoration: none; font-weight: 700; margin-left: 8px; display: inline-flex; align-items: center; gap: 4px;">👑 Admin Portal</a>
       </div>
       <div class="backend-pill">
         <span class="pulse-dot"></span>
@@ -172,6 +173,11 @@
 
       <!-- Authentication Nav Controls -->
       <div class="user-nav">
+        <!-- Direct Admin Link -->
+        <a href="admin.html" class="btn btn-outline" style="border-color: rgba(245,158,11,0.4); color: var(--warning);">
+          <span>👑 Admin Portal</span>
+        </a>
+
         <!-- Logged Out View -->
         <div id="nav-guest" style="display: flex; gap: 10px;">
           <button class="btn btn-outline" onclick="openAuthModal('login')">Sign In</button>

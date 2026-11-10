@@ -77,6 +77,20 @@ class RetailApiHandler(BaseHTTPRequestHandler):
                     self.wfile.write(f.read())
                 return
 
+        # Serve Admin Portal
+        if path in ("/admin", "/admin.html"):
+            admin_path = os.path.join(PROJECT_ROOT, "frontend", "admin.html")
+            if not os.path.exists(admin_path):
+                admin_path = os.path.join(PROJECT_ROOT, "admin.html")
+
+            if os.path.exists(admin_path):
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                with open(admin_path, "rb") as f:
+                    self.wfile.write(f.read())
+                return
+
         if path in ("/api", "/api/health"):
             self._send_json(200, {
                 "service": "RetailHub Indian E-Commerce REST API",
