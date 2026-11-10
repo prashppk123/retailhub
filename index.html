@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetailHub Dashboard - SQL, .NET & Python</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --accent: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px; min-height: 100vh; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    /* Header */
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .badge-stack { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); color: var(--primary); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .status-pill { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(16, 185, 129, 0.2); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+
+    /* KPI Grid */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+    .kpi-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .kpi-val { font-size: 28px; font-weight: 700; margin-top: 8px; color: var(--text); }
+    .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* Layout */
+    .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Products Table */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-btn { background: #334155; border: none; color: var(--text); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+    .filter-btn.active, .filter-btn:hover { background: var(--primary); }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 600; }
+    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .stock-badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; display: inline-block; }
+    .stock-ok { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .stock-low { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .stock-critical { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+
+    /* Form Controls */
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    select, input { width: 100%; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 8px; font-size: 13px; outline: none; }
+    select:focus, input:focus { border-color: var(--primary); }
+    .btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 8px; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    /* Order list */
+    .order-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .order-item:last-child { border-bottom: none; }
+    .order-id { font-weight: 600; color: var(--primary); }
+    .order-date { font-size: 11px; color: var(--muted); }
+    .order-total { font-weight: 700; color: var(--success); font-size: 14px; }
+
+    /* Toast Notification */
+    #toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; border: 1px solid var(--success); color: var(--text); padding: 14px 20px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-size: 13px; display: none; z-index: 100; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1 style="font-size: 22px; font-weight: 700;">RetailHub Storefront & Analytics</h1>
+        <span class="badge-stack">SQL • .NET • Python</span>
+      </div>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        <span id="api-status">Connected to SQLite Database</span>
+      </div>
+    </header>
+
+    <!-- Key Performance Indicators -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Store Revenue</div>
+        <div class="kpi-val" id="kpi-revenue">$974.95</div>
+        <div class="kpi-sub" id="kpi-orders-count">7 orders processed</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Average Order Value</div>
+        <div class="kpi-val" id="kpi-aov">$139.28</div>
+        <div class="kpi-sub">Across all completed sales</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Catalog Products</div>
+        <div class="kpi-val" id="kpi-products">11</div>
+        <div class="kpi-sub">Across 4 distinct categories</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Stock Status</div>
+        <div class="kpi-val" id="kpi-alerts" style="color: var(--warning);">3 Low</div>
+        <div class="kpi-sub">Needs restock attention</div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-grid">
+      <!-- Left: Products Catalog Table -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <span>📦 Product Catalog & Real-Time Stock</span>
+            <button class="filter-btn" onclick="fetchData()">🔄 Refresh</button>
+          </div>
+
+          <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterCategory('All', this)">All Items</button>
+            <button class="filter-btn" onclick="filterCategory('Electronics', this)">Electronics</button>
+            <button class="filter-btn" onclick="filterCategory('Home & Office', this)">Home & Office</button>
+            <button class="filter-btn" onclick="filterCategory('Apparel', this)">Apparel</button>
+            <button class="filter-btn" onclick="filterCategory('Beverages', this)">Beverages</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right: Place Order & Recent Transactions -->
+      <div>
+        <!-- Order Placement Form -->
+        <div class="card">
+          <div class="card-title">⚡ Place Order (SQL Transaction)</div>
+          <form id="order-form" onsubmit="handlePlaceOrder(event)">
+            <div class="form-group">
+              <label for="select-customer">Select Customer</label>
+              <select id="select-customer" required>
+                <option value="1">Alice Johnson (Seattle)</option>
+                <option value="2">Bob Smith (Austin)</option>
+                <option value="3">Carlos Mendez (San Francisco)</option>
+                <option value="4">Diana Patel (New York)</option>
+                <option value="5">Ethan Wright (Chicago)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="select-product">Select Product</label>
+              <select id="select-product" onchange="updatePricePreview()" required>
+                <!-- Populated via JS -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-quantity">Quantity</label>
+              <input type="number" id="input-quantity" min="1" max="50" value="1" onchange="updatePricePreview()" required />
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; font-size: 13px;">
+              <span style="color: var(--muted);">Estimated Total:</span>
+              <strong id="price-preview" style="color: var(--success); font-size: 15px;">$0.00</strong>
+            </div>
+
+            <button type="submit" class="btn-primary" id="btn-submit-order">Place Order</button>
+          </form>
+        </div>
+
+        <!-- Recent Orders Feed -->
+        <div class="card">
+          <div class="card-title">📋 Recent Sales Orders</div>
+          <div id="orders-feed">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Order placed successfully!</div>
+
+  <script>
+    // State data
+    let products = [
+      { product_id: 1, sku: 'ELEC-001', name: 'Wireless Noise-Cancelling Headphones', category: 'Electronics', unit_price: 149.99, stock_quantity: 45 },
+      { product_id: 2, sku: 'ELEC-002', name: 'Mechanical RGB Gaming Keyboard', category: 'Electronics', unit_price: 89.50, stock_quantity: 59 },
+      { product_id: 3, sku: 'ELEC-003', name: 'Ergonomic Vertical Mouse', category: 'Electronics', unit_price: 45.00, stock_quantity: 8 },
+      { product_id: 4, sku: 'ELEC-004', name: '4K Ultra-HD Webcam', category: 'Electronics', unit_price: 79.99, stock_quantity: 5 },
+      { product_id: 5, sku: 'OFF-001', name: 'Adjustable Dual Monitor Arm', category: 'Home & Office', unit_price: 65.00, stock_quantity: 25 },
+      { product_id: 6, sku: 'OFF-002', name: 'Memory Foam Lumbar Support Cushion', category: 'Home & Office', unit_price: 32.50, stock_quantity: 40 },
+      { product_id: 7, sku: 'OFF-003', name: 'Desk Cable Management Tray', category: 'Home & Office', unit_price: 19.99, stock_quantity: 12 },
+      { product_id: 8, sku: 'APP-001', name: 'Developer Cotton Hoodie (Navy)', category: 'Apparel', unit_price: 49.99, stock_quantity: 30 },
+      { product_id: 9, sku: 'APP-002', name: 'Minimalist Tech Backpack', category: 'Apparel', unit_price: 69.00, stock_quantity: 18 },
+      { product_id: 10, sku: 'BEV-001', name: 'Single-Origin Ethiopian Coffee Beans (1lb)', category: 'Beverages', unit_price: 18.50, stock_quantity: 80 },
+      { product_id: 11, sku: 'BEV-002', name: 'Smart Temperature-Control Ceramic Mug', category: 'Beverages', unit_price: 55.00, stock_quantity: 4 }
+    ];
+
+    let orders = [
+      { order_id: 7, customer: 'Alice Johnson', total_amount: 89.50, status: 'COMPLETED', date: 'Just now' },
+      { order_id: 6, customer: 'Ethan Wright', total_amount: 119.98, status: 'COMPLETED', date: '2026-11-02' },
+      { order_id: 5, customer: 'Diana Patel', total_amount: 214.99, status: 'COMPLETED', date: '2026-10-25' },
+      { order_id: 4, customer: 'Alice Johnson', total_amount: 55.00, status: 'COMPLETED', date: '2026-10-18' }
+    ];
+
+    let currentCategory = 'All';
+
+    async function fetchData() {
+      try {
+        const prodRes = await fetch('/api/products');
+        if (prodRes.ok) {
+          const data = await prodRes.json();
+          if (data.products) products = data.products;
+        }
+
+        const analyticsRes = await fetch('/api/analytics');
+        if (analyticsRes.ok) {
+          const data = await analyticsRes.json();
+          if (data.summary) {
+            document.getElementById('kpi-revenue').textContent = '$' + Number(data.summary.total_revenue).toFixed(2);
+            document.getElementById('kpi-orders-count').textContent = data.summary.total_orders + ' orders processed';
+            document.getElementById('kpi-aov').textContent = '$' + Number(data.summary.avg_order_value).toFixed(2);
+          }
+          if (data.low_stock_alerts) {
+            document.getElementById('kpi-alerts').textContent = data.low_stock_alerts.length + ' Low';
+          }
+        }
+
+        const ordRes = await fetch('/api/orders');
+        if (ordRes.ok) {
+          const data = await ordRes.json();
+          if (data.orders) orders = data.orders.slice(0, 5);
+        }
+      } catch (e) {
+        console.log("Local offline simulation mode or direct standalone view active.");
+      }
+      render();
+    }
+
+    function render() {
+      renderProducts();
+      renderProductSelect();
+      renderOrders();
+      updatePricePreview();
+    }
+
+    function renderProducts() {
+      const tbody = document.getElementById('products-table-body');
+      tbody.innerHTML = '';
+
+      const filtered = currentCategory === 'All' 
+        ? products 
+        : products.filter(p => p.category === currentCategory);
+
+      filtered.forEach(p => {
+        let stockClass = 'stock-ok';
+        let stockLabel = p.stock_quantity + ' units';
+        if (p.stock_quantity <= 5) {
+          stockClass = 'stock-critical';
+          stockLabel = p.stock_quantity + ' (Critical)';
+        } else if (p.stock_quantity <= 10) {
+          stockClass = 'stock-low';
+          stockLabel = p.stock_quantity + ' (Low)';
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><code>${p.sku}</code></td>
+          <td><strong>${p.name}</strong></td>
+          <td><span style="color: var(--muted); font-size: 12px;">${p.category}</span></td>
+          <td><strong>$${Number(p.unit_price).toFixed(2)}</strong></td>
+          <td><span class="stock-badge ${stockClass}">${stockLabel}</span></td>
+          <td>
+            <button class="filter-btn" style="padding: 4px 8px;" onclick="quickSelectProduct(${p.product_id})">Select</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderProductSelect() {
+      const select = document.getElementById('select-product');
+      select.innerHTML = '';
+      products.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.product_id;
+        opt.textContent = `${p.name} ($${Number(p.unit_price).toFixed(2)}) - ${p.stock_quantity} left`;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderOrders() {
+      const feed = document.getElementById('orders-feed');
+      feed.innerHTML = '';
+      orders.forEach(o => {
+        const div = document.createElement('div');
+        div.className = 'order-item';
+        div.innerHTML = `
+          <div>
+            <div class="order-id">Order #${o.order_id} <span style="color: var(--text); font-weight: normal;">• ${o.customer || 'Customer'}</span></div>
+            <div class="order-date">${o.order_date || o.date || 'Today'}</div>
+          </div>
+          <div class="order-total">$${Number(o.total_amount).toFixed(2)}</div>
+        `;
+        feed.appendChild(div);
+      });
+    }
+
+    function updatePricePreview() {
+      const prodId = parseInt(document.getElementById('select-product').value);
+      const qty = parseInt(document.getElementById('input-quantity').value) || 1;
+      const prod = products.find(p => p.product_id === prodId);
+      if (prod) {
+        const total = (prod.unit_price * qty).toFixed(2);
+        document.getElementById('price-preview').textContent = '$' + total;
+      }
+    }
+
+    function quickSelectProduct(id) {
+      document.getElementById('select-product').value = id;
+      updatePricePreview();
+      document.getElementById('input-quantity').focus();
+    }
+
+    function filterCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts();
+    }
+
+    async function handlePlaceOrder(e) {
+      e.preventDefault();
+      const customerId = parseInt(document.getElementById('select-customer').value);
+      const custText = document.getElementById('select-customer').selectedOptions[0].text.split('(')[0].trim();
+      const productId = parseInt(document.getElementById('select-product').value);
+      const quantity = parseInt(document.getElementById('input-quantity').value);
+
+      const prod = products.find(p => p.product_id === productId);
+      if (!prod || prod.stock_quantity < quantity) {
+        showToast('Error: Insufficient stock available!', true);
+        return;
+      }
+
+      // Try sending to live API server
+      try {
+        const res = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customer_id: customerId, product_id: productId, quantity: quantity })
+        });
+        if (res.ok) {
+          const result = await res.json();
+          showToast(`Order #${result.order_id} created in SQLite! Stock updated.`);
+          fetchData();
+          return;
+        }
+      } catch (err) {
+        // Fallback for standalone preview
+      }
+
+      // Local optimistic update
+      prod.stock_quantity -= quantity;
+      const total = Number((prod.unit_price * quantity).toFixed(2));
+      const newOrderId = orders.length > 0 ? (Math.max(...orders.map(o => o.order_id)) + 1) : 1;
+      orders.unshift({
+        order_id: newOrderId,
+        customer: custText,
+        total_amount: total,
+        status: 'COMPLETED',
+        date: 'Just now'
+      });
+
+      // Update KPIs
+      const currRev = parseFloat(document.getElementById('kpi-revenue').textContent.replace('$', '').replace(',', ''));
+      document.getElementById('kpi-revenue').textContent = '$' + (currRev + total).toFixed(2);
+      document.getElementById('kpi-orders-count').textContent = orders.length + ' orders processed';
+
+      showToast(`Order #${newOrderId} placed successfully! ${quantity}x ${prod.name}`);
+      render();
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.borderColor = isError ? 'var(--danger)' : 'var(--success)';
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    // Initialize
+    fetchData();
+  </script>
+</body>
+</html>

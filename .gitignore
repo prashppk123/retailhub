@@ -1,0 +1,36 @@
+# ====================================================================
+# RetailHub Git Ignore Rules
+# ====================================================================
+
+# --- Database & Generated Data ---
+database/*.db-journal
+database/*.db-wal
+database/*.db-shm
+# Note: Keep database/retail.db tracked or recreate with python db_setup.py
+
+# --- .NET & C# Build Artifacts ---
+[Bb]in/
+[Oo]bj/
+*.exe
+*.dll
+*.pdb
+*.user
+*.suo
+.vs/
+.vscode/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+venv/
+.venv/
+env/
+
+# --- Operating System Files ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
